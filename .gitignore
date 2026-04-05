@@ -1,0 +1,27 @@
+# Виртуальное окружение
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Файлы PyCharm
+.idea/
+.vscode/
+
+# Файлы проекта
+*.log
+*.sql
+*.db
+.DS_Store
+
+# Pygame специфичные
+*.pyc
+*.pyo
