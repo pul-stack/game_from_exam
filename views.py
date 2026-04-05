@@ -12,4 +12,3 @@ class Colors:
     TOWER_HEADER_V3 = (64, 0, 64)
     OGRES = (0, 255, 60)
     BIG_BOB = (255, 62, 255)
-
