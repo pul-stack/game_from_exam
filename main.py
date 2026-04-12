@@ -9,4 +9,3 @@ def main():
     pygame.display.set_caption('Tower Defense in the Middle Ages')
     clock = pygame.time.Clock()
 
-    game_controller = 
