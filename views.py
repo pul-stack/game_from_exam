@@ -17,7 +17,7 @@ class Colors:
 
 
 class GameView:
-    """"""
+    """Класс, отвечающий за отрисовку игры"""
     SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
     GRID_SIZE = 40
     GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
@@ -25,6 +25,10 @@ class GameView:
 
     SPEED = 10
 
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
+    def __init__(self, screen: pygame.Surface):
+        self.screen = screen
+        self.font_large = pygame.font.Font(None, 48) # размер шрифтов
+        self.font_medium = pygame.font.Font(None, 36)
+        self.font_small = pygame.font.Font(None, 24)
 
-    pygame.display.set_caption('Tower Defense in the Middle Ages')
+        
