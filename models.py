@@ -63,12 +63,13 @@ class Characters:
 class Towers:
     """Класс для переопределения башен"""
 
-    def ___init__(self, health=None, damage=None, speed=GameView.SPEED, front_color=None, header_color=None):
+    def ___init__(self, health=None, damage=None, speed=GameView.SPEED, front_color=None, header_color=None, price=None):
         self.health = health
         self.damage = damage
         self.speed = speed
-        self.front_color= front_color
+        self.front_color = front_color
         self.header_color = header_color
+        self.price = price
 
     def draw(self, screen, x, y):
         """Отрисовка башни"""
@@ -83,12 +84,13 @@ class Tower_v1(Towers):
             damage=30,
             speed=10,
             front_color=Colors.TOWER_FRONT_V1,
-            header_color=Colors.TOWER_HEADER_V1
+            header_color=Colors.TOWER_HEADER_V1,
+            price=100
             )
 
 
 class Goblins(Characters):
-    """Класс для гоблинов"""
+    """Класс для Гоблинов"""
     def __init__(self):
         super().__init__(
             health=70,
@@ -106,10 +108,11 @@ class Tower_v2(Towers):
     def __init__(self):
         super().__init__(
             health=350,
-            damage=53,
+            damage=54,
             speed=10,
             front_color=Colors.TOWER_FRONT_V2,
-            header_color=Colors.TOWER_HEADER_V2
+            header_color=Colors.TOWER_HEADER_V2,
+            price=240
         )
 
 
@@ -121,9 +124,34 @@ class Tower_v3(Towers):
             damage=80,
             speed=10,
             front_color=Colors.TOWER_FRONT_V3,
-            header_color=Colors.TOWER_HEADER_V3
+            header_color=Colors.TOWER_HEADER_V3,
+            price=600
         )
 
 
 class Ogres(Characters):
-    
+    """Класс для Огров"""
+    def __init__(self):
+        super().__init__(
+            health=140,
+            damage=28,
+            speed=8,
+            lines=None,
+            ability=None,
+            give_money=50,
+            color=Colors.OGRES
+        )
+
+
+class Big_Bob(Characters):
+    """ Класс для Биг-Боба"""
+    def __init__(self):
+        super().__init__(
+            health=800,
+            damage=80,
+            speed=6,
+            lines=None,
+            ability=None,
+            give_money=200,
+            color=Colors.BIG_BOB
+        )
