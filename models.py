@@ -35,12 +35,12 @@ class Abilities:
 class Characters:
     """Класс для переопределения персонажей"""
 
-    def __init__(self, health=None, damage=None, speed=GameView.SPEED, lines=None, ability=Abilities.get_ability(), give_money=None, colors=None):
+    def __init__(self, health=None, damage=None, speed=GameView.SPEED, lines=None, ability=None, give_money=None, color=None):
         self.health = health
         self.damage = damage
-        self.speed = speed
+        self.speed = speed or GameView.SPEED
         self.give_money = give_money
-        self.colors = colors
+        self.color = color
 
         self.lines = lines if lines is not None else randint(1, 3)
         if ability is None:
@@ -49,24 +49,26 @@ class Characters:
         else:
             self.ability = ability
 
-        def draw(self, screen, x, y):
-            """Отрисовка персонажа"""
-            pass
+    def draw(self, screen, x, y):
+        """Отрисовка персонажа"""
+        pass
 
-        def edit_possition(self, screen, speed, x, y):
-            pass
+    def update_possition(self, screen, speed, x, y):
+        """Обновление позиции"""
+        pass
 
-        def get_damage(self, screen, health):
-            pass
+    def get_damage(self, screen, health):
+        """Получение урона"""
+        pass
 
 
 class Towers:
     """Класс для переопределения башен"""
 
-    def ___init__(self, health=None, damage=None, speed=GameView.SPEED, front_color=None, header_color=None, price=None):
+    def __init__(self, health=None, damage=None, speed=GameView.SPEED, front_color=None, header_color=None, price=None):
         self.health = health
         self.damage = damage
-        self.speed = speed
+        self.speed = speed or GameView.SPEED
         self.front_color = front_color
         self.header_color = header_color
         self.price = price
