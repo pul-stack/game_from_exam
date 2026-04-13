@@ -16,6 +16,7 @@ class Colors:
     MONEY = (255, 255, 0)
 
 
+
 class GameView:
     """Класс, отвечающий за отрисовку игры"""
     SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
@@ -27,8 +28,12 @@ class GameView:
 
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
-        self.font_large = pygame.font.Font(None, 48) # размер шрифтов
+        self.font_large = pygame.font.Font(None, 48)  # размер шрифтов
         self.font_medium = pygame.font.Font(None, 36)
         self.font_small = pygame.font.Font(None, 24)
 
-        
+    def draw_field(self):
+        pass
+
+    def menu(self):
+        pass
