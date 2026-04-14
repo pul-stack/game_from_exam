@@ -7,7 +7,7 @@ clock = pygame.time.Clock()
 running = True
 
 # ЦВЕТА
-GREEN_FIELD = (20, 255, 44)      # Зелёное поле
+GREEN_FIELD = (20, 160, 44)      # Зелёное поле
 SAND_COLOR = (238, 214, 175)     # Песочный цвет
 
 # Размеры
@@ -19,7 +19,7 @@ STRIP_WIDTH = 80
 
 # Позиции полос (равномерно распределены)
 # 800 / 4 = 200 между центрами
-STRIP_POSITIONS = [160, 360, 560]  # Центры полос
+STRIP_POSITIONS = [200, 400, 600]  # Центры полос
 
 while running:
     for event in pygame.event.get():
