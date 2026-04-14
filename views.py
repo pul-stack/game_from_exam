@@ -44,9 +44,9 @@ class GameView:
         self.screen.fill(Colors.FIELD)
 
         for pos in self.STRIP_POSITIONS:
-            left_edge = pos - self.STRIP_WIDTH
-            pygame.draw.rect(self.screen, Colors.SAND,
-                             left_edge, self.STRIP_WIDTH, self.SCREEN_HEIGHT) ################################# screen (выше)
+            left_edge = pos - self.STRIP_WIDTH // 2
+            rect = pygame.Rect(left_edge, 0, self.STRIP_WIDTH, self.SCREEN_HEIGHT)
+            pygame.draw.rect(self.screen, Colors.SAND, rect) # м.б что-то поменять ------------------------
 
     def draw_menu(self):
         self.draw_field()

@@ -38,7 +38,7 @@ class Characters:
     def __init__(self, health=None, damage=None, speed=GameView.SPEED, lines=None, ability=None, give_money=None, color=None):
         self.health = health
         self.damage = damage
-        self.speed = speed or GameView.SPEED
+        self.speed = speed if speed is not None else GameView.SPEED
         self.give_money = give_money
         self.color = color
 
