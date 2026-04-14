@@ -1,5 +1,6 @@
 import pygame
 from views import GameView
+from controllers import GameController
 
 def main():
     """Функция, управляющая работой всей игры"""
@@ -8,7 +9,16 @@ def main():
     screen = pygame.display.set_mode((GameView.SCREEN_WIDTH, GameView.SCREEN_HEIGHT), 0, 32)
     pygame.display.set_caption('Tower Defense in the Middle Ages')
     clock = pygame.time.Clock()
+
+    game_controller = GameController
     
     running = True
     while running:
-        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+
+            game_controller = 
