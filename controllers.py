@@ -15,3 +15,10 @@ class GameController:
         elif self.game_state == "playing":
             self.view.draw_field()
             ...
+    
+    def work_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+
+            if self.game_state == "menu":
+                buttons = self.view.draw_menu()
