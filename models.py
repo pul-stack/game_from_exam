@@ -82,7 +82,6 @@ class Tower_v1(Towers):
     """Башня первой версии"""
     def __init__(self):
         super().__init__(
-            health=200,
             damage=30,
             speed=10,
             front_color=Colors.TOWER_FRONT_V1,
@@ -109,7 +108,6 @@ class Tower_v2(Towers):
     """Башня второй версии"""
     def __init__(self):
         super().__init__(
-            health=350,
             damage=54,
             speed=10,
             front_color=Colors.TOWER_FRONT_V2,
@@ -122,7 +120,6 @@ class Tower_v3(Towers):
     """Башня третьей версии"""
     def __init__(self):
         super().__init__(
-            health=500,
             damage=80,
             speed=10,
             front_color=Colors.TOWER_FRONT_V3,

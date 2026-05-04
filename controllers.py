@@ -8,6 +8,8 @@ class GameController:
         self.view = GameView(screen)
         self.state = None
         self.game_state = "menu"  # menu, playing, game_over
+        self.money = 100
+        self.health = 200
 
     def draw(self):
         if self.game_state == "menu":
@@ -15,10 +17,26 @@ class GameController:
         elif self.game_state == "playing":
             self.view.draw_field()
             ...
-    
+
     def work_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
 
             if self.game_state == "menu":
                 buttons = self.view.draw_menu()
+                if buttons.get("start") and buttons["start"].collidepoint(pos):
+                    self.start_new_game()
+                elif buttons.get("exit") and buttons["exit"].collidepoint(pos):
+                    return False
+
+        return True
+    
+    def start_new_game(self):
+        """Начинает новую игру"""
+        self.game_state = "playing"
+        self.money = 100
+        self.health = 200
+                    
+    # def damage_base(self):
+    #     damage = 
+    #     new_health_base = self.health - 
