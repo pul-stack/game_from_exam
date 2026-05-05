@@ -16,9 +16,9 @@ class GameController:
             self.menu_buttons = self.view.draw_menu()
         elif self.game_state == "playing":
             self.view.draw_field()
-            ...
+            self.view.draw_panel()
 
-    def work_event(self, event):
+    def work_event(self, event):  # handle_event
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
 
@@ -28,6 +28,9 @@ class GameController:
                     self.start_new_game()
                 elif buttons.get("exit") and buttons["exit"].collidepoint(pos):
                     return False
+                
+            # elif self.game_state == "playing" and not self.waiting:
+            #     self.
 
         return True
     

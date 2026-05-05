@@ -16,14 +16,14 @@ class Colors:
     BIG_BOB = (255, 62, 255)
     MONEY = (255, 255, 0)
     TEXT = (0, 0, 0)
-    BUTTON = (0, 0, 122)
+    BUTTON = (160, 145, 150)
     BUTTON_ACTIVE = (0, 0, 255)
 
 
 class GameView:
     """Класс, отвечающий за отрисовку игры"""
     # Параметры для экрана игры
-    SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
+    SCREEN_WIDTH, SCREEN_HEIGHT = 800, 800
     GRID_SIZE = 40
     GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
     GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
@@ -39,6 +39,14 @@ class GameView:
         self.font_large = pygame.font.Font(None, 48)  # размер шрифтов
         self.font_medium = pygame.font.Font(None, 36)
         self.font_small = pygame.font.Font(None, 24)
+
+        self.goblin_img = pygame.image.load("assets/images/jean-nicolas-racicot-goblin-vox1.jpg")
+        self.money_img = pygame.image.load("assets/images/money.gif")
+        self.tower_v1_img = pygame.image.load("assets/images/tower_v1.png")
+        self.tower_v2_img = pygame.image.load("assets/images/tower_v2.png")
+        self.tower_v3_img = pygame.image.load("assets/images/tower_v3.png")
+        self.orch_img = pygame.image.load("assets/images/orcsheet.png")
+        self.big_bob_img = pygame.image.load("assets/images/Big_Bob.png")
 
     def draw_field(self):
         self.screen.fill(Colors.FIELD)
@@ -77,3 +85,10 @@ class GameView:
             y += 70
 
         return buttons
+    
+    def draw_panel(self):
+        cols = 3
+        start_x = 2
+        start_y = 600
+
+        pygame.draw.rect(self.screen, Colors.BUTTON, pygame.Rect(start_x, start_y, 796, 200), border_radius=15)
