@@ -45,7 +45,7 @@ class GameView:
         self.tower_v1_img = pygame.image.load("assets/images/tower_v1.png")
         self.tower_v2_img = pygame.image.load("assets/images/tower_v2.png")
         self.tower_v3_img = pygame.image.load("assets/images/tower_v3.png")
-        self.orch_img = pygame.image.load("assets/images/orcsheet.png")
+        self.ogrch_img = pygame.image.load("assets/images/ogre_img.jpg")
         self.big_bob_img = pygame.image.load("assets/images/Big_Bob.png")
 
     def draw_field(self):
@@ -88,7 +88,34 @@ class GameView:
     
     def draw_panel(self):
         cols = 3
-        start_x = 2
+        start_x = 1
         start_y = 600
 
-        pygame.draw.rect(self.screen, Colors.BUTTON, pygame.Rect(start_x, start_y, 796, 200), border_radius=15)
+        pygame.draw.rect(self.screen, Colors.BUTTON, pygame.Rect(start_x, start_y, 798, 230), border_radius=15)
+
+        icon_tower_v1 = pygame.transform.scale(self.tower_v1_img, (200, 170))
+        self.screen.blit(icon_tower_v1, (40, 615))
+
+        icon_tower_v2 = pygame.transform.scale(self.tower_v2_img, (200, 170))
+        self.screen.blit(icon_tower_v2, (300, 615))
+
+        icon_tower_v1 = pygame.transform.scale(self.tower_v1_img, (200, 170))
+        self.screen.blit(icon_tower_v1, (560, 615))
+
+
+    def draw_enemy(self, enemy):
+        """Отрисовка врага"""
+        if enemy.color == Colors.GOBLINS:
+            img = self.goblin_img
+            size = (30, 30)
+        elif enemy.color == Colors.OGRES:
+            img = self.ogrch_img
+            size = (40,40)
+        elif enemy.color == Colors.BIG_BOB:
+            img = self.big_bob_img
+            size = (55, 55)
+        else:
+            return
+        
+        img = pygame.transform.scale(img, size)
+        self.screen.blit(img, (enemy.x - size[0]//2, enemy.y - size[1]//2))

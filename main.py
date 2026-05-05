@@ -26,6 +26,8 @@ def main():
 
             game_controller.work_event(event)
 
+        game_controller.update()
+
         # game_controller
         game_controller.draw()
 

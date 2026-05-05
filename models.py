@@ -53,9 +53,10 @@ class Characters:
         """Отрисовка персонажа"""
         pass
 
-    def update_possition(self, screen, speed, x, y):
-        """Обновление позиции"""
-        pass
+    def update_position(self): 
+        """Движение вниз по полосе"""
+        if self.y < 600:
+            self.y += self.speed / 60
 
     def get_damage(self, screen, health):
         """Получение урона"""
