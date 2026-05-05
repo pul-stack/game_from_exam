@@ -32,7 +32,7 @@ class GameView:
     STRIP_POSITIONS = [200, 400, 600]
     STRIP_WIDTH = 80
 
-    SPEED = 10
+    SPEED = 60
 
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
@@ -40,7 +40,7 @@ class GameView:
         self.font_medium = pygame.font.Font(None, 36)
         self.font_small = pygame.font.Font(None, 24)
 
-        self.goblin_img = pygame.image.load("assets/images/jean-nicolas-racicot-goblin-vox1.jpg")
+        self.goblin_img = pygame.image.load("assets/images/jean-nicolas-racicot-goblin-vox1.png")
         self.money_img = pygame.image.load("assets/images/money.gif")
         self.tower_v1_img = pygame.image.load("assets/images/tower_v1.png")
         self.tower_v2_img = pygame.image.load("assets/images/tower_v2.png")

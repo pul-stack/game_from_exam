@@ -97,7 +97,7 @@ class Goblins(Characters):
         super().__init__(
             health=70,
             damage=14,
-            speed=10,
+            speed=23,
             lines=None,
             ability=None,
             give_money=20,
@@ -135,7 +135,7 @@ class Ogres(Characters):
         super().__init__(
             health=140,
             damage=28,
-            speed=8,
+            speed=18,
             lines=None,
             ability=None,
             give_money=50,
@@ -149,7 +149,7 @@ class Big_Bob(Characters):
         super().__init__(
             health=800,
             damage=80,
-            speed=6,
+            speed=14,
             lines=None,
             ability=None,
             give_money=200,
