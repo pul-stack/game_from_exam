@@ -54,7 +54,7 @@ class Characters:
         pass
 
     def update_position(self): 
-        """Движение вниз по полосе"""
+        """Движение вниз по дорожке"""
         if self.y < 600:
             self.y += self.speed / 60
 

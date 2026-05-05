@@ -13,14 +13,14 @@ class GameController:
         self.money = 100
         self.health = 200
 
-        self.enemies = []
+        self.enemies : list = []
         self.spawn_timer = 0
         self.spawn_delay = 120 # Каждый 2 секунды
 
     def update(self):
         """Обновление игры каждый кадр"""
         if self.game_state == "playing":
-            self.spawn_timer += 1
+            self.spawn_timer += 1  # За 2 секунлы будет 120
             if self.spawn_timer >= self.spawn_delay:
                 self.spawn_timer = 0
                 self.spawn_enemy()
@@ -30,25 +30,24 @@ class GameController:
                 enemy.y += enemy.speed / 60
 
                 if enemy.y >= 581:
-                    self.health -= enemy.damage
+                    self.health -= enemy.damage  # Надо сделать формулу какую-то
                     self.enemies.remove(enemy)
 
-                    if self.health <= 0:
-                        self.health == 0
+                    if self.health <= 0:  # Где отображается hp?
+                        self.health = 0
                         self.game_state = "game_over"
 
+    
     def spawn_enemy(self):
         """Создаёт случайного моба на любой из дорожек"""
         enemy_type = random.choices(
-
             [Goblins, Ogres, Big_Bob],
             weights=[75, 15, 10]
         )[0]
 
+        enemy = enemy_type()  # Создаётся рандомный юнит
 
-        enemy = enemy_type()
-
-        strip = random.choice(GameView.STRIP_POSITIONS)
+        strip = random.choice(GameView.STRIP_POSITIONS)  
         enemy.x = strip + random.randint(-20, 20)
         enemy.y = -40
 
@@ -61,6 +60,7 @@ class GameController:
             self.view.draw_field()
             self.view.draw_panel()
 
+            # Отрисовка юнитов
             for enemy in self.enemies:
                 self.view.draw_enemy(enemy)
 
@@ -74,7 +74,7 @@ class GameController:
                     self.start_new_game()
                 elif buttons.get("exit") and buttons["exit"].collidepoint(pos):
                     return False
-                
+
             elif self.game_state == "playing":  # Будет установка башен
                 pass
 

@@ -26,7 +26,7 @@ def main():
 
             game_controller.work_event(event)
 
-        game_controller.update()
+        game_controller.update()  # Вызывается 60 раз в секунду
 
         # game_controller
         game_controller.draw()

@@ -105,13 +105,13 @@ class GameView:
 
     def draw_enemy(self, enemy):
         """Отрисовка врага"""
-        if enemy.color == Colors.GOBLINS:
+        if enemy.color == Colors.GOBLINS:  # Нужно поменять
             img = self.goblin_img
             size = (30, 30)
-        elif enemy.color == Colors.OGRES:
+        elif enemy.color == Colors.OGRES:  # Тоже
             img = self.ogrch_img
             size = (40,40)
-        elif enemy.color == Colors.BIG_BOB:
+        elif enemy.color == Colors.BIG_BOB:  # Тоже
             img = self.big_bob_img
             size = (55, 55)
         else:
