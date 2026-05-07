@@ -45,7 +45,7 @@ class GameView:
         self.tower_v1_img = pygame.image.load("assets/images/tower_v1.png")
         self.tower_v2_img = pygame.image.load("assets/images/tower_v2.png")
         self.tower_v3_img = pygame.image.load("assets/images/tower_v3.png")
-        self.ogrch_img = pygame.image.load("assets/images/ogre_img.jpg")
+        self.ogrch_img = pygame.image.load("assets/images/ogre_img.png")
         self.big_bob_img = pygame.image.load("assets/images/Big_Bob.png")
 
     def draw_field(self):
