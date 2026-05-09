@@ -43,10 +43,10 @@ class GameController:
                         self.health = 0
                         self.game_state = "game_over"
 
-            # НОВОЕ: обновляем наведение мыши
+            # Обновление наведения мыши
             self.update_hover()
 
-    # НОВОЕ: определяет над какой ячейкой мышь
+    # Определение над какой ячейкой мышь
     def update_hover(self):
         mouse_pos = pygame.mouse.get_pos()
 
@@ -68,7 +68,7 @@ class GameController:
                     self.hovered_cell = i
                     break
 
-    # НОВОЕ: проверка занятости ячейки
+    # Проверка занятости ячейки
     def is_cell_occupied(self, grass_index, cell_index):
         for tower in self.towers:
             if tower.grass_index == grass_index and tower.cell_index == cell_index:
@@ -95,6 +95,10 @@ class GameController:
             self.menu_buttons = self.view.draw_menu()
         elif self.game_state == "playing":
             self.view.draw_field()
+
+            self.view.current_health = self.health
+            self.view.current_money = self.money
+            
             self.view.draw_panel()
 
             # Подсветка при перетаскивании
@@ -138,7 +142,7 @@ class GameController:
 
         return True
 
-    # НОВОЕ: установка башни
+    # Установка башни
     def place_tower(self, grass_index, cell_index):
         if self.selected_tower_type == "v1":
             tower = Tower_v1()

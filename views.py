@@ -59,6 +59,9 @@ class GameView:
         self.tower_v2_icon = pygame.transform.scale(self.tower_v2_img, (180, 150))
         self.tower_v3_icon = pygame.transform.scale(self.tower_v3_img, (180, 150))
 
+        self.current_health = 200
+        self.current_money = 100
+
     def draw_field(self):
         self.screen.fill(Colors.FIELD)
 
@@ -100,14 +103,12 @@ class GameView:
     def draw_panel(self):
         start_x = 1
         start_y = 600
-
         pygame.draw.rect(self.screen, Colors.BUTTON, pygame.Rect(start_x, start_y, 798, 230), border_radius=15)
 
-        # Иконки и подписи
         tower_data = [
-            (self.tower_v1_icon, 40, "Tower V1", "$100"),
-            (self.tower_v2_icon, 300, "Tower V2", "$240"),
-            (self.tower_v3_icon, 560, "Tower V3", "$600"),
+            (self.tower_v1_icon, 40, "Tower V1", "100"),
+            (self.tower_v2_icon, 300, "Tower V2", "240"),
+            (self.tower_v3_icon, 560, "Tower V3", "600"),
         ]
         for icon, x, name, price in tower_data:
             self.screen.blit(icon, (x, 615))
@@ -115,6 +116,13 @@ class GameView:
             price_text = self.font_small.render(price, True, Colors.TEXT)
             self.screen.blit(name_text, (x + 10, 615 + 155))
             self.screen.blit(price_text, (x + 10, 615 + 175))
+
+        # Отображение HP и золота (передаётся из контроллера)
+        # Место — левый верхний угол панели
+        hp_text = self.font_medium.render(f"HP: {self.current_health}", True, Colors.TEXT)
+        money_text = self.font_medium.render(f"Gold: {self.current_money}", True, Colors.TEXT)
+        self.screen.blit(hp_text, (15, 608))
+        self.screen.blit(money_text, (15, 638))
 
     # Возвращает rect для башни по индексам
     def get_tower_rect(self, grass_index, cell_index):
@@ -125,9 +133,25 @@ class GameView:
     # Отрисовка установленной башни
     def draw_tower_on_field(self, tower):
         rect = self.get_tower_rect(tower.grass_index, tower.cell_index)
-        pygame.draw.rect(self.screen, tower.front_color, rect, border_radius=8)
-        pygame.draw.rect(self.screen, tower.header_color, rect, 3, border_radius=8)
-        price_text = self.font_small.render(f"${tower.price}", True, Colors.TEXT)
+        
+        # Выбираем картинку по типу башни
+        from models import Tower_v1, Tower_v2, Tower_v3
+        
+        if isinstance(tower, Tower_v1):
+            img = self.tower_v1_img
+        elif isinstance(tower, Tower_v2):
+            img = self.tower_v2_img
+        elif isinstance(tower, Tower_v3):
+            img = self.tower_v3_img
+        else:
+            img = self.tower_v1_img  # запасной вариант
+        
+        # Масштабируем под размер ячейки и рисуем
+        img = pygame.transform.scale(img, (rect.width, rect.height))
+        self.screen.blit(img, (rect.x, rect.y))
+        
+        # Цена поверх картинки
+        price_text = self.font_small.render(f"{tower.price}", True, Colors.TEXT)
         self.screen.blit(price_text, (rect.x + 5, rect.y + 5))
 
     # Подсветка ячейки (жёлтая - можно, красная - нельзя)
