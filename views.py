@@ -20,6 +20,7 @@ class Colors:
     BUTTON_ACTIVE = (0, 0, 255)
 
 
+
 class GameView:
     """Класс, отвечающий за отрисовку игры"""
     # Параметры для экрана игры
@@ -34,6 +35,12 @@ class GameView:
 
     SPEED = 60
 
+    GRASS_CENTERS = [80, 300, 500, 720]
+
+    TOWER_CELLS_Y = [50, 200, 350, 500]
+    TOWER_WIDTH = 76
+    TOWER_HEIGHT = 140
+
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
         self.font_large = pygame.font.Font(None, 48)  # размер шрифтов
@@ -47,6 +54,10 @@ class GameView:
         self.tower_v3_img = pygame.image.load("assets/images/tower_v3.png")
         self.ogrch_img = pygame.image.load("assets/images/ogre_img.png")
         self.big_bob_img = pygame.image.load("assets/images/Big_Bob.png")
+
+        self.tower_v1_icon = pygame.transform.scale(self.tower_v1_img, (180, 150))
+        self.tower_v2_icon = pygame.transform.scale(self.tower_v2_img, (180, 150))
+        self.tower_v3_icon = pygame.transform.scale(self.tower_v3_img, (180, 150))
 
     def draw_field(self):
         self.screen.fill(Colors.FIELD)
@@ -87,21 +98,51 @@ class GameView:
         return buttons
     
     def draw_panel(self):
-        cols = 3
         start_x = 1
         start_y = 600
 
         pygame.draw.rect(self.screen, Colors.BUTTON, pygame.Rect(start_x, start_y, 798, 230), border_radius=15)
 
-        icon_tower_v1 = pygame.transform.scale(self.tower_v1_img, (200, 170))
-        self.screen.blit(icon_tower_v1, (40, 615))
+        # Иконки и подписи
+        tower_data = [
+            (self.tower_v1_icon, 40, "Tower V1", "$100"),
+            (self.tower_v2_icon, 300, "Tower V2", "$240"),
+            (self.tower_v3_icon, 560, "Tower V3", "$600"),
+        ]
+        for icon, x, name, price in tower_data:
+            self.screen.blit(icon, (x, 615))
+            name_text = self.font_small.render(name, True, Colors.TEXT)
+            price_text = self.font_small.render(price, True, Colors.TEXT)
+            self.screen.blit(name_text, (x + 10, 615 + 155))
+            self.screen.blit(price_text, (x + 10, 615 + 175))
 
-        icon_tower_v2 = pygame.transform.scale(self.tower_v2_img, (200, 170))
-        self.screen.blit(icon_tower_v2, (300, 615))
+    # Возвращает rect для башни по индексам
+    def get_tower_rect(self, grass_index, cell_index):
+        x = self.GRASS_CENTERS[grass_index] - self.TOWER_WIDTH // 2
+        y = self.TOWER_CELLS_Y[cell_index]
+        return pygame.Rect(x, y, self.TOWER_WIDTH, self.TOWER_HEIGHT)
 
-        icon_tower_v1 = pygame.transform.scale(self.tower_v1_img, (200, 170))
-        self.screen.blit(icon_tower_v1, (560, 615))
+    # Отрисовка установленной башни
+    def draw_tower_on_field(self, tower):
+        rect = self.get_tower_rect(tower.grass_index, tower.cell_index)
+        pygame.draw.rect(self.screen, tower.front_color, rect, border_radius=8)
+        pygame.draw.rect(self.screen, tower.header_color, rect, 3, border_radius=8)
+        price_text = self.font_small.render(f"${tower.price}", True, Colors.TEXT)
+        self.screen.blit(price_text, (rect.x + 5, rect.y + 5))
 
+    # Подсветка ячейки (жёлтая - можно, красная - нельзя)
+    def draw_tower_preview(self, grass_index, cell_index, can_place):
+        if grass_index is None or cell_index is None:
+            return
+        rect = self.get_tower_rect(grass_index, cell_index)
+        s = pygame.Surface((rect.width, rect.height))
+        s.set_alpha(100)
+        if can_place:
+            s.fill(Colors.MONEY)
+        else:
+            s.fill((255, 80, 80))
+        self.screen.blit(s, (rect.x, rect.y))
+        pygame.draw.rect(self.screen, Colors.TEXT, rect, 2, border_radius=8)
 
     def draw_enemy(self, enemy):
         """Отрисовка врага"""

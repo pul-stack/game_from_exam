@@ -17,6 +17,12 @@ class GameController:
         self.spawn_timer = 0
         self.spawn_delay = 120 # Каждый 2 секунды
 
+        # Список башен, выбранныый тип, наведение
+        self.towers : list = []
+        self.selected_tower_type = None  # "v1", "v2", "v3" или None
+        self.hovered_grass = None
+        self.hovered_cell = None
+
     def update(self):
         """Обновление игры каждый кадр"""
         if self.game_state == "playing":
@@ -37,7 +43,11 @@ class GameController:
                         self.health = 0
                         self.game_state = "game_over"
 
-    
+            # НОВОЕ: обновляем наведение мыши
+            self.update_hover()
+
+
+
     def spawn_enemy(self):
         """Создаёт случайного моба на любой из дорожек"""
         enemy_type = random.choices(
