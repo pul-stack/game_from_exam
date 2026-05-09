@@ -1,6 +1,6 @@
 import pygame
 from views import GameView
-from models import Goblins, Ogres, Big_Bob
+from models import Goblins, Ogres, Big_Bob, Tower_v1, Tower_v2, Tower_v3
 import random
 
 
@@ -46,7 +46,34 @@ class GameController:
             # НОВОЕ: обновляем наведение мыши
             self.update_hover()
 
+    # НОВОЕ: определяет над какой ячейкой мышь
+    def update_hover(self):
+        mouse_pos = pygame.mouse.get_pos()
 
+        if mouse_pos[1] >= 600:
+            self.hovered_grass = None
+            self.hovered_cell = None
+            return
+
+        self.hovered_grass = None
+        for i, center in enumerate(GameView.GRASS_CENTERS):
+            if abs(mouse_pos[0] - center) < GameView.TOWER_WIDTH // 2 + 10:
+                self.hovered_grass = i
+                break
+
+        self.hovered_cell = None
+        if self.hovered_grass is not None:
+            for i, cell_y in enumerate(GameView.TOWER_CELLS_Y):
+                if cell_y <= mouse_pos[1] < cell_y + GameView.TOWER_HEIGHT:
+                    self.hovered_cell = i
+                    break
+
+    # НОВОЕ: проверка занятости ячейки
+    def is_cell_occupied(self, grass_index, cell_index):
+        for tower in self.towers:
+            if tower.grass_index == grass_index and tower.cell_index == cell_index:
+                return True
+        return False
 
     def spawn_enemy(self):
         """Создаёт случайного моба на любой из дорожек"""
@@ -70,6 +97,15 @@ class GameController:
             self.view.draw_field()
             self.view.draw_panel()
 
+            # Подсветка при перетаскивании
+            if self.selected_tower_type and self.hovered_grass is not None and self.hovered_cell is not None:
+                can_place = not self.is_cell_occupied(self.hovered_grass, self.hovered_cell)
+                self.view.draw_tower_preview(self.hovered_grass, self.hovered_cell, can_place)
+
+            # Отрисовка установленных башен
+            for tower in self.towers:
+                self.view.draw_tower_on_field(tower)
+
             # Отрисовка юнитов
             for enemy in self.enemies:
                 self.view.draw_enemy(enemy)
@@ -85,19 +121,50 @@ class GameController:
                 elif buttons.get("exit") and buttons["exit"].collidepoint(pos):
                     return False
 
-            elif self.game_state == "playing":  # Будет установка башен
-                pass
+            elif self.game_state == "playing":
+                # Клик по панели — выбор башни
+                if pos[1] >= 600:
+                    if 40 <= pos[0] <= 220:
+                        self.selected_tower_type = "v1"
+                    elif 300 <= pos[0] <= 480:
+                        self.selected_tower_type = "v2"
+                    elif 560 <= pos[0] <= 740:
+                        self.selected_tower_type = "v3"
+
+                # Клик по полю — установка башни
+                elif self.selected_tower_type and self.hovered_grass is not None and self.hovered_cell is not None:
+                    if not self.is_cell_occupied(self.hovered_grass, self.hovered_cell):
+                        self.place_tower(self.hovered_grass, self.hovered_cell)
 
         return True
-    
+
+    # НОВОЕ: установка башни
+    def place_tower(self, grass_index, cell_index):
+        if self.selected_tower_type == "v1":
+            tower = Tower_v1()
+        elif self.selected_tower_type == "v2":
+            tower = Tower_v2()
+        elif self.selected_tower_type == "v3":
+            tower = Tower_v3()
+        else:
+            return
+
+        if self.money < tower.price:
+            return
+
+        self.money -= tower.price
+        tower.grass_index = grass_index
+        tower.cell_index = cell_index
+        self.towers.append(tower)
+        self.selected_tower_type = None
+
     def start_new_game(self):
-        """Начинает новую игру"""
         self.game_state = "playing"
         self.money = 100
         self.health = 200
         self.enemies = []
-        self.spawn_tower = 0
-                    
-    # def damage_base(self):
-    #     damage = 
-    #     new_health_base = self.health - 
+        self.towers = []
+        self.selected_tower_type = None
+        self.hovered_grass = None
+        self.hovered_cell = None
+        self.spawn_timer = 0
