@@ -5,9 +5,9 @@ from views import GameView, Colors
 class Abilities:
     """Класс способностей для врагов"""
     abilities = {  # Сразу с шансом
-        "strong":   {"health": 1.3, "damage": 1.3, "chance": 10},
-        "fast":     {"speed": 1.4, "chance": 10},
-        "monetary": {"give_money": 1.4, "chance": 15},
+        "strong":   {"health": 1.3, "damage": 1.3, "chance": 10, "color": (255, 100, 100)},
+        "fast":     {"speed": 1.4, "chance": 10, "color": (100, 100, 255)},
+        "monetary": {"give_money": 1.4, "chance": 15, "color": (255, 255, 100)},
     }
 
     @staticmethod
@@ -31,6 +31,8 @@ class Abilities:
             enemy.speed = int(enemy.speed * stats["speed"])
         if "give_money" in stats:
             enemy.give_money = int(enemy.give_money * stats["give_money"])
+        if "color" in stats:
+            enemy.color = stats["color"]
 
 class Characters:
     """Класс для переопределения персонажей"""

@@ -171,18 +171,40 @@ class GameView:
         pygame.draw.rect(self.screen, Colors.TEXT, rect, 2, border_radius=8)  # Рисует рамку для ячейки
 
     def draw_enemy(self, enemy):
-        """Отрисовка врага"""
-        if enemy.color == Colors.GOBLINS:  # Нужно поменять
+        """Отрисовка врага со способностью и без"""
+        # Выбор картинки и размера по типу врага    
+        if enemy.color in [Colors.GOBLINS, (255, 255, 100), (255, 100, 100), (100, 100, 255)]:
             img = self.goblin_img
             size = (30, 30)
-        elif enemy.color == Colors.OGRES:  # Тоже
+        elif enemy.color in [Colors.OGRES, (255, 255, 100), (255, 100, 100), (100, 100, 255)]:
             img = self.ogrch_img
             size = (40,40)
-        elif enemy.color == Colors.BIG_BOB:  # Тоже
+        elif enemy.color in [Colors.BIG_BOB, (255, 255, 100), (255, 100, 100), (100, 100, 255)]:
             img = self.big_bob_img
             size = (55, 55)
         else:
             return
         
         img = pygame.transform.scale(img, size)
-        self.screen.blit(img, (enemy.x - size[0]//2, enemy.y - size[1]//2))
+        # Координаты левого верхнего угла картинки
+        x = enemy.x - size[0] // 2
+        y = enemy.y - size[1] // 2
+
+        # Проверка, есть ли у врага способность
+        has_ability = enemy.color not in [Colors.GOBLINS, Colors.OGRES, Colors.BIG_BOB]
+
+        if has_ability:
+            # Рисуется цветная рамка
+            rect = pygame.Rect(x - 3, y - 3, size[0] + 6, size[1] + 6)  # Прямоугльник чуть больше иконки enemy
+            pygame.draw.rect(self.screen, enemy.color, rect, 2, border_radius=4)
+
+            # Цветная полоска над врагом
+            bar_width = size[0]
+            bar_height = 5
+            bar_x = x
+            bar_y = y - 10
+            pygame.draw.rect(self.screen, enemy.color, (bar_x, bar_y, bar_width, bar_height))
+            pygame.draw.rect(self.screen, Colors.TEXT, (bar_x, bar_y, bar_width, bar_height), 1)
+        
+        # Рисуется сама картинка врага
+        self.screen.blit(img, (x, y))
