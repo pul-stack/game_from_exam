@@ -30,20 +30,20 @@ class GameView:
     GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
 
     # Параметры для поля
-    STRIP_POSITIONS = [200, 400, 600]
-    STRIP_WIDTH = 80
+    STRIP_POSITIONS = [200, 400, 600]  # Центры дорожек
+    STRIP_WIDTH = 80  # Ширина
 
     SPEED = 60
 
-    GRASS_CENTERS = [80, 300, 500, 720]
+    GRASS_CENTERS = [80, 300, 500, 720]  # Центры травы по x
 
-    TOWER_CELLS_Y = [50, 200, 350, 500]
+    TOWER_CELLS_Y = [50, 200, 350, 500]  # Y-координаты верхних границ ячеек
     TOWER_WIDTH = 76
     TOWER_HEIGHT = 140
 
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
-        self.font_large = pygame.font.Font(None, 48)  # размер шрифтов
+        self.font_large = pygame.font.Font(None, 48)  # Размер шрифтов
         self.font_medium = pygame.font.Font(None, 36)
         self.font_small = pygame.font.Font(None, 24)
 
@@ -55,6 +55,7 @@ class GameView:
         self.ogrch_img = pygame.image.load("assets/images/ogre_img.png")
         self.big_bob_img = pygame.image.load("assets/images/Big_Bob.png")
 
+        # Иконки сделанные под размер панели
         self.tower_v1_icon = pygame.transform.scale(self.tower_v1_img, (180, 150))
         self.tower_v2_icon = pygame.transform.scale(self.tower_v2_img, (180, 150))
         self.tower_v3_icon = pygame.transform.scale(self.tower_v3_img, (180, 150))
@@ -100,6 +101,7 @@ class GameView:
 
         return buttons
     
+    # Отрисовка всей панели
     def draw_panel(self):
         start_x = 1
         start_y = 600
@@ -126,7 +128,7 @@ class GameView:
 
     # Возвращает rect для башни по индексам
     def get_tower_rect(self, grass_index, cell_index):
-        x = self.GRASS_CENTERS[grass_index] - self.TOWER_WIDTH // 2
+        x = self.GRASS_CENTERS[grass_index] - self.TOWER_WIDTH // 2  # Получаем левый край прямоугольника
         y = self.TOWER_CELLS_Y[cell_index]
         return pygame.Rect(x, y, self.TOWER_WIDTH, self.TOWER_HEIGHT)
 
@@ -148,25 +150,25 @@ class GameView:
         
         # Масштабируем под размер ячейки и рисуем
         img = pygame.transform.scale(img, (rect.width, rect.height))
-        self.screen.blit(img, (rect.x, rect.y))
+        self.screen.blit(img, (rect.x, rect.y))  # Рисует картинку на экране в нужном месте 
         
         # Цена поверх картинки
-        price_text = self.font_small.render(f"{tower.price}", True, Colors.TEXT)
-        self.screen.blit(price_text, (rect.x + 5, rect.y + 5))
+        price_text = self.font_small.render(f"{tower.price}", True, Colors.TEXT)   # Текст превращается в картинку с сглаженным текстом
+        self.screen.blit(price_text, (rect.x + 5, rect.y + 5))  # Пишет текст в нужном месте
 
     # Подсветка ячейки (жёлтая - можно, красная - нельзя)
     def draw_tower_preview(self, grass_index, cell_index, can_place):
-        if grass_index is None or cell_index is None:
+        if grass_index is None or cell_index is None:  # Если мышь не над травой или не над ячейкой
             return
         rect = self.get_tower_rect(grass_index, cell_index)
-        s = pygame.Surface((rect.width, rect.height))
-        s.set_alpha(100)
+        s = pygame.Surface((rect.width, rect.height))  # Создаётся новый слой
+        s.set_alpha(100)  # Прозрачность слоя
         if can_place:
-            s.fill(Colors.MONEY)
+            s.fill(Colors.MONEY)  # Присваивается цвет
         else:
             s.fill((255, 80, 80))
-        self.screen.blit(s, (rect.x, rect.y))
-        pygame.draw.rect(self.screen, Colors.TEXT, rect, 2, border_radius=8)
+        self.screen.blit(s, (rect.x, rect.y))  # Накладывается слой на коорд. для основного экрана
+        pygame.draw.rect(self.screen, Colors.TEXT, rect, 2, border_radius=8)  # Рисует рамку для ячейки
 
     def draw_enemy(self, enemy):
         """Отрисовка врага"""

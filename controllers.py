@@ -13,6 +13,7 @@ class GameController:
         self.money = 100
         self.health = 200
 
+        # Мобы и их спавн
         self.enemies : list = []
         self.spawn_timer = 0
         self.spawn_delay = 120 # Каждый 2 секунды
@@ -51,25 +52,25 @@ class GameController:
         mouse_pos = pygame.mouse.get_pos()
 
         if mouse_pos[1] >= 600:
-            self.hovered_grass = None
-            self.hovered_cell = None
+            self.hovered_grass = None  # Индекс линии травы
+            self.hovered_cell = None  # Индекс ячейки по вертикали
             return
 
-        self.hovered_grass = None
+        self.hovered_grass = None  # Ищем линию травы
         for i, center in enumerate(GameView.GRASS_CENTERS):
             if abs(mouse_pos[0] - center) < GameView.TOWER_WIDTH // 2 + 10:
                 self.hovered_grass = i
                 break
 
-        self.hovered_cell = None
-        if self.hovered_grass is not None:
+        self.hovered_cell = None  # # Ищем ячейку по вертикали
+        if self.hovered_grass is not None:  # Если мышь над травой
             for i, cell_y in enumerate(GameView.TOWER_CELLS_Y):
                 if cell_y <= mouse_pos[1] < cell_y + GameView.TOWER_HEIGHT:
                     self.hovered_cell = i
                     break
 
     # Проверка занятости ячейки
-    def is_cell_occupied(self, grass_index, cell_index):
+    def free_cell(self, grass_index, cell_index):
         for tower in self.towers:
             if tower.grass_index == grass_index and tower.cell_index == cell_index:
                 return True
@@ -98,12 +99,12 @@ class GameController:
 
             self.view.current_health = self.health
             self.view.current_money = self.money
-            
+
             self.view.draw_panel()
 
             # Подсветка при перетаскивании
             if self.selected_tower_type and self.hovered_grass is not None and self.hovered_cell is not None:
-                can_place = not self.is_cell_occupied(self.hovered_grass, self.hovered_cell)
+                can_place = not self.free_cell(self.hovered_grass, self.hovered_cell)
                 self.view.draw_tower_preview(self.hovered_grass, self.hovered_cell, can_place)
 
             # Отрисовка установленных башен
@@ -137,7 +138,7 @@ class GameController:
 
                 # Клик по полю — установка башни
                 elif self.selected_tower_type and self.hovered_grass is not None and self.hovered_cell is not None:
-                    if not self.is_cell_occupied(self.hovered_grass, self.hovered_cell):
+                    if not self.free_cell(self.hovered_grass, self.hovered_cell):
                         self.place_tower(self.hovered_grass, self.hovered_cell)
 
         return True
