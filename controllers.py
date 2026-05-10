@@ -1,6 +1,6 @@
 import pygame
 from views import GameView
-from models import Goblins, Ogres, Big_Bob, Tower_v1, Tower_v2, Tower_v3
+from models import Goblins, Ogres, Big_Bob, Tower_v1, Tower_v2, Tower_v3, Abilities
 import random
 
 
@@ -44,6 +44,17 @@ class GameController:
                         self.health = 0
                         self.game_state = "game_over"
 
+            for tower in self.towers:
+                tower.attack_timer += 1
+                if tower.attack_timer >= tower.attack_speed:
+                    tower.attack_timer = 0
+                    target = self.find_target(tower)
+                    if target:
+                        target.health -= tower.damage
+                        if target.health <= 0:
+                            self.money += target.give_money
+                            self.enemies.remove(target)
+
             # Обновление наведения мыши
             self.update_hover()
 
@@ -84,6 +95,7 @@ class GameController:
         )[0]
 
         enemy = enemy_type()  # Создаётся рандомный юнит
+        Abilities.get_ability(enemy)
 
         strip = random.choice(GameView.STRIP_POSITIONS)  
         enemy.x = strip + random.randint(-20, 20)
@@ -163,9 +175,41 @@ class GameController:
         self.towers.append(tower)
         self.selected_tower_type = None
 
+
+    def find_target(self, tower):
+        """Находит врага на ближайших песчанным линиях, который ближе всего к финишу"""
+
+        # Определяются соседние линиии для башни
+        if tower.grass_index == 0:
+            strips = [GameView.STRIP_POSITIONS[0]]
+        elif tower.grass_index == 1:
+            strips = [GameView.STRIP_POSITIONS[0], GameView.STRIP_POSITIONS[1]]
+        elif tower.grass_index == 2:
+            strips = [GameView.STRIP_POSITIONS[1], GameView.STRIP_POSITIONS[2]]
+        elif tower.grass_index == 3:
+            strips = [GameView.STRIP_POSITIONS[2]]
+        else:
+            return
+        
+        # Ищется враг с самым большим Y на линиях
+        best_target = None
+        best_y = -1
+
+        for enemy in self.enemies:
+            # Проверяем, на соседнем ли песке враг
+            for strip_x in strips:
+                if abs(enemy.x - strip_x) < GameView.STRIP_WIDTH // 2:  # Враг на этой линии
+                    if enemy.y > best_y:  # Ближайший враг к финишу
+                        best_y = enemy.y
+                        best_target = enemy
+                    break
+
+        return best_target
+
+
     def start_new_game(self):
         self.game_state = "playing"
-        self.money = 100
+        self.money = 150
         self.health = 200
         self.enemies = []
         self.towers = []

@@ -1,36 +1,36 @@
 import pygame
-from random import randint
+import random
 from views import GameView, Colors
 
 class Abilities:
-    """Класс способностей для персонажей"""
-    strong = {"health": 1.3,
-             "damage": 1.3,
-             "COLOR": (255, 0, 0),
-             }
-
-    fast = {"speed": 1.4,
-            "COLOR": (0, 0, 255),
-            }
-
-    monetary = {"give_money": 1.4,
-                "color": (255, 255, 0),
-                }
-
-    chance_strong = chance_fast = 0.1
-    chance_monetary = 0.15
+    """Класс способностей для врагов"""
+    abilities = {  # Сразу с шансом
+        "strong":   {"health": 1.3, "damage": 1.3, "chance": 10},
+        "fast":     {"speed": 1.4, "chance": 10},
+        "monetary": {"give_money": 1.4, "chance": 15},
+    }
 
     @staticmethod
-    def get_ability():
-        get_monetary, get_strong, get_fast = "monetary", "strong", "fast"
+    def get_ability(enemy):
+        "Случайная способность к врагу при спавне"
+        names = list(Abilities.abilities.keys())
+        chances = [Abilities.abilities[n]['chance'] for n in names]
+        names.append(None)
+        chances.append(100 - sum(chances))  # Шанс, что не будет способности
 
-        if randint(1, 100) <= Abilities.chance_monetary * 100:
-            return get_monetary
-        elif randint(1, 100) <= Abilities.chance_strong * 100:
-            return get_strong
-        elif randint(1, 100) <= Abilities.chance_fast * 100:
-            return get_fast
-
+        name = random.choices(names, weights=chances, k=1)[0]
+        if name is None:
+            return
+        
+        stats = Abilities.abilities[name]
+        if "strong" in stats:
+            enemy.strong = int(enemy.strong * stats["strong"])
+        if "health" in stats:
+            enemy.health = int(enemy.health * stats["health"])
+        if "speed" in stats:
+            enemy.speed = int(enemy.speed * stats["speed"])
+        if "give_money" in stats:
+            enemy.give_money = int(enemy.give_money * stats["give_money"])
 
 class Characters:
     """Класс для переопределения персонажей"""
@@ -42,12 +42,7 @@ class Characters:
         self.give_money = give_money
         self.color = color
 
-        self.lines = lines if lines is not None else randint(1, 3)
-        if ability is None:
-            ab = Abilities()
-            self.ability = ab.get_ability()
-        else:
-            self.ability = ability
+        self.lines = lines if lines is not None else random.randint(1, 3)
 
     def draw(self, screen, x, y):
         """Отрисовка персонажа"""
@@ -73,6 +68,10 @@ class Towers:
         self.front_color = front_color
         self.header_color = header_color
         self.price = price
+
+        self.attack_timer = 0
+        self.attack_speed = 60
+
 
     def draw(self, screen, x, y):
         """Отрисовка башни"""

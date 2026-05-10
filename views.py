@@ -24,7 +24,7 @@ class Colors:
 class GameView:
     """Класс, отвечающий за отрисовку игры"""
     # Параметры для экрана игры
-    SCREEN_WIDTH, SCREEN_HEIGHT = 800, 800
+    SCREEN_WIDTH, SCREEN_HEIGHT = 800, 810
     GRID_SIZE = 40
     GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
     GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
@@ -61,7 +61,7 @@ class GameView:
         self.tower_v3_icon = pygame.transform.scale(self.tower_v3_img, (180, 150))
 
         self.current_health = 200
-        self.current_money = 100
+        self.current_money = 150
 
     def draw_field(self):
         self.screen.fill(Colors.FIELD)
