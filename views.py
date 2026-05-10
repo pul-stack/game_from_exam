@@ -173,13 +173,13 @@ class GameView:
     def draw_enemy(self, enemy):
         """Отрисовка врага со способностью и без"""
         # Выбор картинки и размера по типу врага    
-        if enemy.color in [Colors.GOBLINS, (255, 255, 100), (255, 100, 100), (100, 100, 255)]:
+        if enemy.enemy_type == "Goblin":
             img = self.goblin_img
             size = (30, 30)
-        elif enemy.color in [Colors.OGRES, (255, 255, 100), (255, 100, 100), (100, 100, 255)]:
+        elif enemy.enemy_type == "Ogre":
             img = self.ogrch_img
             size = (40,40)
-        elif enemy.color in [Colors.BIG_BOB, (255, 255, 100), (255, 100, 100), (100, 100, 255)]:
+        elif enemy.enemy_type == "Big Bob":
             img = self.big_bob_img
             size = (55, 55)
         else:

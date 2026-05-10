@@ -44,6 +44,8 @@ class Characters:
         self.give_money = give_money
         self.color = color
 
+        self.enemy_type = None  # "Goblin", "Ogre", "Big Bob"
+
         self.lines = lines if lines is not None else random.randint(1, 3)
 
     def draw(self, screen, x, y):
@@ -104,6 +106,7 @@ class Goblins(Characters):
             give_money=20,
             color=Colors.GOBLINS
         )
+        self.enemy_type = "Goblin"
 
 
 class Tower_v2(Towers):
@@ -142,6 +145,7 @@ class Ogres(Characters):
             give_money=50,
             color=Colors.OGRES
         )
+        self.enemy_type = "Ogre"
 
 
 class Big_Bob(Characters):
@@ -156,3 +160,4 @@ class Big_Bob(Characters):
             give_money=200,
             color=Colors.BIG_BOB
         )
+        self.enemy_type = "Big Bob"
