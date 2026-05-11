@@ -107,24 +107,45 @@ class GameView:
         start_y = 600
         pygame.draw.rect(self.screen, Colors.BUTTON, pygame.Rect(start_x, start_y, 798, 230), border_radius=15)
 
+        mouse_pos = pygame.mouse.get_pos()
+
         tower_data = [
             (self.tower_v1_icon, 40, "Tower V1", "100"),
             (self.tower_v2_icon, 300, "Tower V2", "240"),
             (self.tower_v3_icon, 560, "Tower V3", "600"),
         ]
+
         for icon, x, name, price in tower_data:
+
+            # Иконка с размерами для проверки
+            icon_rect = pygame.Rect(x, 615, 180, 150)
             self.screen.blit(icon, (x, 615))
+
+            # Если мышь над иконкой
+            if icon_rect.collidepoint(mouse_pos):
+                s = pygame.Surface((180, 150))
+                s.set_alpha(80)
+                s.fill(Colors.BUTTON_ACTIVE)
+                self.screen.blit(s, (x, 615))
+
             name_text = self.font_small.render(name, True, Colors.TEXT)
-            price_text = self.font_small.render(price, True, Colors.TEXT)
             self.screen.blit(name_text, (x + 10, 615 + 155))
-            self.screen.blit(price_text, (x + 10, 615 + 175))
+            # Иконка + цена
+            coin = pygame.transform.scale(self.money_img, (48, 48))
+            self.screen.blit(coin, (x - 10, 615 + 160))
+            price_text = self.font_small.render(price, True, Colors.TEXT)
+            self.screen.blit(price_text, (x + 28, 615 + 175))
 
         # Отображение HP и золота (передаётся из контроллера)
         # Место — левый верхний угол панели
         hp_text = self.font_medium.render(f"HP: {self.current_health}", True, Colors.TEXT)
         money_text = self.font_medium.render(f"Gold: {self.current_money}", True, Colors.TEXT)
-        self.screen.blit(hp_text, (15, 608))
-        self.screen.blit(money_text, (15, 638))
+        self.screen.blit(hp_text, (25, 608))
+        self.screen.blit(money_text, (25, 638))
+
+        # Иконка монетки
+        money_icon = pygame.transform.scale(self.money_img, (60, 60))
+        self.screen.blit(money_icon, (-18, 620))
 
     # Возвращает rect для башни по индексам
     def get_tower_rect(self, grass_index, cell_index):
@@ -153,6 +174,8 @@ class GameView:
         self.screen.blit(img, (rect.x, rect.y))  # Рисует картинку на экране в нужном месте 
         
         # Цена поверх картинки
+        coin = pygame.transform.scale(self.money_img, (42, 42))
+        self.screen.blit(coin, (rect.x - 23, rect.y - 10))
         price_text = self.font_small.render(f"{tower.price}", True, Colors.TEXT)   # Текст превращается в картинку с сглаженным текстом
         self.screen.blit(price_text, (rect.x + 5, rect.y + 5))  # Пишет текст в нужном месте
 
