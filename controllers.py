@@ -36,6 +36,7 @@ class GameController:
             for enemy in self.enemies[:]:
                 enemy.y += enemy.speed / 60
 
+                # Снижение hp базы
                 if enemy.y >= 581:
                     self.health -= enemy.damage  # Надо сделать формулу какую-то
                     self.enemies.remove(enemy)
@@ -44,6 +45,7 @@ class GameController:
                         self.health = 0
                         self.game_state = "game_over"
 
+            # Стрельба башен и уничтожение target
             for tower in self.towers:
                 tower.attack_timer += 1
                 if tower.attack_timer >= tower.attack_speed:
@@ -67,20 +69,20 @@ class GameController:
             self.hovered_cell = None  # Индекс ячейки по вертикали
             return
 
-        self.hovered_grass = None  # Ищем линию травы
+        self.hovered_grass = None  # Ищем линию травы (смотрим линии по вертикали)
         for i, center in enumerate(GameView.GRASS_CENTERS):
             if abs(mouse_pos[0] - center) < GameView.TOWER_WIDTH // 2 + 10:
                 self.hovered_grass = i
                 break
 
-        self.hovered_cell = None  # # Ищем ячейку по вертикали
+        self.hovered_cell = None  # Ищем ячейку по вертикали
         if self.hovered_grass is not None:  # Если мышь над травой
             for i, cell_y in enumerate(GameView.TOWER_CELLS_Y):
-                if cell_y <= mouse_pos[1] < cell_y + GameView.TOWER_HEIGHT:
+                if cell_y <= mouse_pos[1] < cell_y + GameView.TOWER_HEIGHT:  # Верхняя ... Нижняя
                     self.hovered_cell = i
                     break
 
-    # Проверка занятости ячейки
+    # Проверка занятости ячейки  -> True, если занята
     def free_cell(self, grass_index, cell_index):
         for tower in self.towers:
             if tower.grass_index == grass_index and tower.cell_index == cell_index:
@@ -94,7 +96,7 @@ class GameController:
             weights=[75, 15, 10]
         )[0]
 
-        enemy = enemy_type()  # Создаётся рандомный юнит
+        enemy = enemy_type()  # Создаётся рандомный юнит (из-за строки выше)
         Abilities.get_ability(enemy)
 
         strip = random.choice(GameView.STRIP_POSITIONS)  
@@ -116,8 +118,8 @@ class GameController:
 
             # Подсветка при перетаскивании
             if self.selected_tower_type and self.hovered_grass is not None and self.hovered_cell is not None:
-                can_place = not self.free_cell(self.hovered_grass, self.hovered_cell)
-                self.view.draw_tower_preview(self.hovered_grass, self.hovered_cell, can_place)
+                can_place = not self.free_cell(self.hovered_grass, self.hovered_cell)  # Можно ли поставить
+                self.view.draw_tower_preview(self.hovered_grass, self.hovered_cell, can_place)  # 
 
             # Отрисовка установленных башен
             for tower in self.towers:
@@ -150,7 +152,7 @@ class GameController:
 
                 # Клик по полю — установка башни
                 elif self.selected_tower_type and self.hovered_grass is not None and self.hovered_cell is not None:
-                    if not self.free_cell(self.hovered_grass, self.hovered_cell):
+                    if not self.free_cell(self.hovered_grass, self.hovered_cell):  # Если свободна ячейка
                         self.place_tower(self.hovered_grass, self.hovered_cell)
 
         return True

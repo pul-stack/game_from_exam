@@ -31,6 +31,7 @@ def main():
         game_controller.update()  # Вызывается 60 раз в секунду
         # game_controller
         game_controller.draw()
+        # Обновление экрана (обязательная строка)
         pygame.display.flip()
 
     pygame.quit()

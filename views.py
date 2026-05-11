@@ -185,7 +185,7 @@ class GameView:
             return
         rect = self.get_tower_rect(grass_index, cell_index)
         s = pygame.Surface((rect.width, rect.height))  # Создаётся новый слой
-        s.set_alpha(100)  # Прозрачность слоя
+        s.set_alpha(80)  # Прозрачность слоя
         if can_place:
             s.fill(Colors.MONEY)  # Присваивается цвет
         else:
@@ -210,7 +210,7 @@ class GameView:
         
         img = pygame.transform.scale(img, size)
         # Координаты левого верхнего угла картинки
-        x = enemy.x - size[0] // 2
+        x = enemy.x - size[0] // 2  # Обновляется в реальном времени
         y = enemy.y - size[1] // 2
 
         # Проверка, есть ли у врага способность
