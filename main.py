@@ -24,13 +24,13 @@ def main():
                 if event.key == pygame.K_ESCAPE:
                     running = False
 
-            game_controller.work_event(event)
+            result = game_controller.work_event(event)
+            if result is False:
+                running = False
 
         game_controller.update()  # Вызывается 60 раз в секунду
-
         # game_controller
         game_controller.draw()
-
         pygame.display.flip()
 
     pygame.quit()
