@@ -1,6 +1,6 @@
 import pygame
 from views import GameView
-from models import Goblins, Ogres, Big_Bob, Tower_v1, Tower_v2, Tower_v3, Abilities
+from models import Goblins, Ogres, Big_Bob, Tower_v1, Tower_v2, Tower_v3, Abilities, Missile
 import random
 
 
@@ -13,10 +13,11 @@ class GameController:
         self.money = 100
         self.health = 200
 
-        # Мобы и их спавн
+        # Мобы и их спавн, снаряды
         self.enemies : list = []
         self.spawn_timer = 0
         self.spawn_delay = 120 # Каждый 2 секунды
+        self.projectiles: list = []
 
         # Список башен, выбранныый тип, наведение
         self.towers : list = []
@@ -45,17 +46,38 @@ class GameController:
                         self.health = 0
                         self.game_state = "game_over"
 
-            # Стрельба башен и уничтожение target
+            for proj in self.projectiles[:]:
+                proj.update()
+                if not proj.alive:
+                    self.projectiles.remove(proj)
+                    # Если снаряд убил цель
+                    if proj.target and proj.target.health <= 0 and proj.target in self.enemies:
+                        self.money += proj.target.give_money
+                        self.enemies.remove(proj.target)
+
+            # Стрельба башен
             for tower in self.towers:
                 tower.attack_timer += 1
                 if tower.attack_timer >= tower.attack_speed:
                     tower.attack_timer = 0
                     target = self.find_target(tower)
                     if target:
-                        target.health -= tower.damage
-                        if target.health <= 0:
-                            self.money += target.give_money
-                            self.enemies.remove(target)
+                        # Создаём снаряд: из центра башни во врага
+                        tower_x = GameView.GRASS_CENTERS[tower.grass_index]
+                        tower_y = GameView.TOWER_CELLS_Y[tower.cell_index] + GameView.TOWER_HEIGHT // 2
+
+                        # Цвет снаряда по типу башни
+                        from models import Tower_v1, Tower_v2, Tower_v3
+                        if isinstance(tower, Tower_v1):
+                            missile_color = (255, 255, 100)  # Жёлтый
+                        elif isinstance(tower, Tower_v2):
+                            missile_color = (100, 100 , 255)  # Синий
+                        elif isinstance(tower, Tower_v3):
+                            missile_color = (255, 80, 80)  # Красный
+                        else:
+                            missile_color = (255, 255, 100)
+
+                        self.projectiles.append(Missile(tower_x, tower_y, target, tower.damage, color=missile_color))
 
             # Обновление наведения мыши
             self.update_hover()
@@ -138,6 +160,10 @@ class GameController:
             for tower in self.towers:
                 self.view.draw_tower_on_field(tower)
 
+            # Отрисовка снарядов
+            for proj in self.projectiles:
+                self.view.draw_projectile(proj)
+
             # Отрисовка юнитов
             for enemy in self.enemies:
                 self.view.draw_enemy(enemy)
@@ -198,7 +224,7 @@ class GameController:
         tower_y = GameView.TOWER_CELLS_Y[tower.cell_index] + GameView.TOWER_HEIGHT // 2
 
         target = None
-        target_dist = -1  # Радиус атаки башни
+        best_y = -1  # Чтлбы искать того, кто ближе всего к финишу
 
         for enemy in self.enemies:
             # Расстояние от центра башни до врага
@@ -207,15 +233,15 @@ class GameController:
             dist = (dx**2 + dy**2)**0.5
 
             if dist <= tower.attack_range:  # Если враг в радиусе
-                if dist > target_dist:
-                    target_dist = dist
+                if enemy.y > best_y:
+                    best_y = enemy.y
                     target = enemy
-            
+
         return target
 
     def start_new_game(self):
         self.game_state = "playing"
-        self.money = 150
+        self.money = 1500
         self.health = 200
         self.enemies = []
         self.towers = []
@@ -223,3 +249,4 @@ class GameController:
         self.hovered_grass = None
         self.hovered_cell = None
         self.spawn_timer = 0
+        self.projectiles = []

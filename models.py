@@ -82,6 +82,40 @@ class Towers:
         """Отрисовка башни"""
         pass
 
+class Missile:
+    """Снаряд башни, летящий к врагу"""
+    def __init__(self,x, y, target, damage, speed=6, color=(255, 255, 100)):
+        self.x = x
+        self.y = y
+        self.target = target
+        self.damage = damage
+        self.speed = speed
+        self.alive = True  # Жив ли снаряд
+        self.color = color
+        # Начальные положения координат
+        self.start_x = x
+        self.start_y = y
+
+    def update(self):
+        """Снаряд движется к цели и наносит ей урон"""
+        # Если цель раньше умерла, то снаряд исчезает
+        if not self.target or self.target.health <= 0:
+            self.alive = False
+            return
+            
+        # Вектор к цели
+        dx = self.target.x - self.x
+        dy = self.target.y - self.y
+        dist = (dx**2 + dy**2) ** 0.5
+
+        if dist < self.speed:
+            # Снаряд достиг цели
+            self.target.health -= self.damage
+            self.alive = False
+        else:
+            # Движение к цели
+            self.x += dx / dist * self.speed
+            self.y += dy / dist * self.speed
 
 class Tower_v1(Towers):
     """Башня первой версии"""

@@ -205,6 +205,20 @@ class GameView:
 
         pygame.draw.rect(self.screen, Colors.TEXT, rect, 2, border_radius=8)
 
+    def draw_projectile(self, proj):
+        """Отрисовка снаряда с хвостом"""
+        r, g, b = proj.color
+        # Основной снаряд (яркая точка)
+        pygame.draw.circle(self.screen, proj.color, (int(proj.x), int(proj.y)), 4)
+        # Свечение вокруг снаряда
+        s = pygame.Surface((12, 12), pygame.SRCALPHA)
+        pygame.draw.circle(s, (r, g, b, 80), (6, 6), 6)
+        self.screen.blit(s, (int(proj.x) - 6, int(proj.y) - 6))
+        # Тонкая линия от башни до снаряда
+        pygame.draw.line(self.screen, (r, g, b, 60),
+                         (proj.start_x, proj.start_y),
+                         (int(proj.x) , int(proj.y)), 1)
+
     def draw_enemy(self, enemy):
         """Отрисовка врага со способностью и без"""
         # Выбор картинки и размера по типу врага    
