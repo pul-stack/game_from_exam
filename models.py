@@ -65,7 +65,7 @@ class Characters:
 class Towers:
     """Класс для переопределения башен"""
 
-    def __init__(self, health=None, damage=None, speed=GameView.SPEED, front_color=None, header_color=None, price=None):
+    def __init__(self, health=None, damage=None, speed=GameView.SPEED, front_color=None, header_color=None, price=None, attack_range=120):
         self.health = health
         self.damage = damage
         self.speed = speed or GameView.SPEED
@@ -73,6 +73,7 @@ class Towers:
         self.header_color = header_color
         self.price = price
 
+        self.attack_range = attack_range
         self.attack_timer = 0
         self.attack_speed = 60
 
@@ -90,7 +91,8 @@ class Tower_v1(Towers):
             speed=10,
             front_color=Colors.TOWER_FRONT_V1,
             header_color=Colors.TOWER_HEADER_V1,
-            price=100
+            price=100,
+            attack_range=120
             )
 
 
@@ -117,7 +119,8 @@ class Tower_v2(Towers):
             speed=10,
             front_color=Colors.TOWER_FRONT_V2,
             header_color=Colors.TOWER_HEADER_V2,
-            price=240
+            price=240,
+            attack_range=160
         )
 
 
@@ -129,7 +132,8 @@ class Tower_v3(Towers):
             speed=10,
             front_color=Colors.TOWER_FRONT_V3,
             header_color=Colors.TOWER_HEADER_V3,
-            price=600
+            price=600,
+            attack_range=200
         )
 
 

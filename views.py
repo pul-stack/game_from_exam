@@ -179,19 +179,31 @@ class GameView:
         price_text = self.font_small.render(f"{tower.price}", True, Colors.TEXT)   # Текст превращается в картинку с сглаженным текстом
         self.screen.blit(price_text, (rect.x + 5, rect.y + 5))  # Пишет текст в нужном месте
 
-    # Подсветка ячейки (жёлтая - можно, красная - нельзя)
-    def draw_tower_preview(self, grass_index, cell_index, can_place):
+    # Подсветка ячейки (жёлтая - можно, красная - нельзя) и радиуса атаки башни
+    def draw_tower_preview(self, grass_index, cell_index, can_place, range_radius=None):
         if grass_index is None or cell_index is None:  # Если мышь не над травой или не над ячейкой
             return
+        
         rect = self.get_tower_rect(grass_index, cell_index)
-        s = pygame.Surface((rect.width, rect.height))  # Создаётся новый слой
-        s.set_alpha(80)  # Прозрачность слоя
+
+        if range_radius:
+            center_x = self.GRASS_CENTERS[grass_index]
+            center_y = self.TOWER_CELLS_Y[cell_index] + self.TOWER_HEIGHT // 2
+
+            s = pygame.Surface((self.SCREEN_WIDTH, self.SCREEN_HEIGHT), pygame.SRCALPHA)
+            pygame.draw.circle(s, (255, 255, 100, 40), (center_x, center_y), range_radius)
+            self.screen.blit(s, (0, 0))
+
+        # Подсветка ячейки
+        s2 = pygame.Surface((rect.width, rect.height))
+        s2.set_alpha(80)
         if can_place:
-            s.fill(Colors.MONEY)  # Присваивается цвет
+            s2.fill(Colors.MONEY)
         else:
-            s.fill((255, 80, 80))
-        self.screen.blit(s, (rect.x, rect.y))  # Накладывается слой на коорд. для основного экрана
-        pygame.draw.rect(self.screen, Colors.TEXT, rect, 2, border_radius=8)  # Рисует рамку для ячейки
+            s2.fill(255, 80, 80)
+        self.screen.blit(s2, (rect.x, rect.y))
+
+        pygame.draw.rect(self.screen, Colors.TEXT, rect, 2, border_radius=8)
 
     def draw_enemy(self, enemy):
         """Отрисовка врага со способностью и без"""
