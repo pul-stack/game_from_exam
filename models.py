@@ -92,7 +92,7 @@ class Tower_v1(Towers):
             front_color=Colors.TOWER_FRONT_V1,
             header_color=Colors.TOWER_HEADER_V1,
             price=100,
-            attack_range=120
+            attack_range=200
             )
 
 
@@ -120,7 +120,7 @@ class Tower_v2(Towers):
             front_color=Colors.TOWER_FRONT_V2,
             header_color=Colors.TOWER_HEADER_V2,
             price=240,
-            attack_range=160
+            attack_range=260
         )
 
 
@@ -133,7 +133,7 @@ class Tower_v3(Towers):
             front_color=Colors.TOWER_FRONT_V3,
             header_color=Colors.TOWER_HEADER_V3,
             price=600,
-            attack_range=200
+            attack_range=330
         )
 
 

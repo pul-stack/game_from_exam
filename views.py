@@ -200,7 +200,7 @@ class GameView:
         if can_place:
             s2.fill(Colors.MONEY)
         else:
-            s2.fill(255, 80, 80)
+            s2.fill((255, 80, 80))
         self.screen.blit(s2, (rect.x, rect.y))
 
         pygame.draw.rect(self.screen, Colors.TEXT, rect, 2, border_radius=8)

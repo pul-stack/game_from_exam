@@ -198,7 +198,7 @@ class GameController:
         tower_y = GameView.TOWER_CELLS_Y[tower.cell_index] + GameView.TOWER_HEIGHT // 2
 
         target = None
-        target_dist = tower.attack_range  # Радиус атаки башни
+        target_dist = -1  # Радиус атаки башни
 
         for enemy in self.enemies:
             # Расстояние от центра башни до врага
