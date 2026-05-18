@@ -7,7 +7,7 @@ class Colors:
     TOWER_HEADER_V1 = (0, 0, 0)
     GOBLINS = (0, 255, 0)
     FIELD = (20, 160, 44)
-    SAND = (238, 214, 175)  
+    SAND = (238, 214, 175)
     TOWER_FRONT_V2 = (160, 128, 160)
     TOWER_HEADER_V2 = (32, 0, 32)
     TOWER_FRONT_V3 = (192, 128, 192)
@@ -18,7 +18,6 @@ class Colors:
     TEXT = (0, 0, 0)
     BUTTON = (160, 145, 150)
     BUTTON_ACTIVE = (0, 0, 255)
-
 
 
 class GameView:
@@ -43,9 +42,9 @@ class GameView:
 
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
-        self.font_large = pygame.font.Font(None, 48)  # Размер шрифтов
-        self.font_medium = pygame.font.Font(None, 36)
-        self.font_small = pygame.font.Font(None, 24)
+        self.font_large = pygame.font.Font(None, 52)  # Размер шрифтов
+        self.font_medium = pygame.font.Font(None, 40)
+        self.font_small = pygame.font.Font(None, 28)
 
         self.goblin_img = pygame.image.load("assets/images/jean-nicolas-racicot-goblin-vox1.png")
         self.money_img = pygame.image.load("assets/images/money.gif")
@@ -54,36 +53,39 @@ class GameView:
         self.tower_v3_img = pygame.image.load("assets/images/tower_v3.png")
         self.ogrch_img = pygame.image.load("assets/images/ogre_img.png")
         self.big_bob_img = pygame.image.load("assets/images/Big_Bob.png")
+        self.menu_bg = pygame.image.load("assets/images/menu_background.jpg")
 
         # Иконки сделанные под размер панели
         self.tower_v1_icon = pygame.transform.scale(self.tower_v1_img, (180, 150))
         self.tower_v2_icon = pygame.transform.scale(self.tower_v2_img, (180, 150))
         self.tower_v3_icon = pygame.transform.scale(self.tower_v3_img, (180, 150))
 
+        self.menu_bg = pygame.transform.scale(self.menu_bg, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+
         self.current_health = 200
         self.current_money = 150
 
-    def draw_field(self):
-        self.screen.fill(Colors.FIELD)
+    # def draw_field(self):
+    #     self.screen.fill(Colors.FIELD)
 
-        for pos in self.STRIP_POSITIONS:
-            left_edge = pos - self.STRIP_WIDTH // 2
-            rect = pygame.Rect(left_edge, 0, self.STRIP_WIDTH, self.SCREEN_HEIGHT)
-            pygame.draw.rect(self.screen, Colors.SAND, rect) # м.б что-то поменять ------------------------
+    #     for pos in self.STRIP_POSITIONS:
+    #         left_edge = pos - self.STRIP_WIDTH // 2
+    #         rect = pygame.Rect(left_edge, 0, self.STRIP_WIDTH, self.SCREEN_HEIGHT)
+    #         pygame.draw.rect(self.screen, Colors.SAND, rect)  # м.б что-то поменять ------------------------
 
     def draw_menu(self):
-        self.draw_field()
+        self.screen.blit(self.menu_bg, (0, 0))
 
         title = self.font_large.render("Tower Defense in the Middle Ages", True, Colors.TEXT)
-        title_rect = title.get_rect(center=(400, 150))
+        title_rect = title.get_rect(center=(400, 100))
         self.screen.blit(title, title_rect)
 
         subtitle = self.font_small.render("Win this game", True, Colors.TEXT)
-        sub_rect = subtitle.get_rect(center=(400, 210))
+        sub_rect = subtitle.get_rect(center=(400, 160))
         self.screen.blit(subtitle, sub_rect)
 
         buttons = {}
-        y = 340
+        y = 440
 
         for text, action in [("Start new game", "start"), ("Exit", 'exit')]:
             mouse_pos = pygame.mouse.get_pos()
@@ -100,7 +102,7 @@ class GameView:
             y += 70
 
         return buttons
-    
+
     # Отрисовка всей панели
     def draw_panel(self):
         start_x = 1
@@ -156,10 +158,10 @@ class GameView:
     # Отрисовка установленной башни
     def draw_tower_on_field(self, tower):
         rect = self.get_tower_rect(tower.grass_index, tower.cell_index)
-        
+
         # Выбираем картинку по типу башни
         from models import Tower_v1, Tower_v2, Tower_v3
-        
+
         if isinstance(tower, Tower_v1):
             img = self.tower_v1_img
         elif isinstance(tower, Tower_v2):
@@ -168,11 +170,11 @@ class GameView:
             img = self.tower_v3_img
         else:
             img = self.tower_v1_img  # запасной вариант
-        
+
         # Масштабируем под размер ячейки и рисуем
         img = pygame.transform.scale(img, (rect.width, rect.height))
         self.screen.blit(img, (rect.x, rect.y))  # Рисует картинку на экране в нужном месте 
-        
+
         # Цена поверх картинки
         coin = pygame.transform.scale(self.money_img, (42, 42))
         self.screen.blit(coin, (rect.x - 23, rect.y - 10))
@@ -183,7 +185,7 @@ class GameView:
     def draw_tower_preview(self, grass_index, cell_index, can_place, range_radius=None):
         if grass_index is None or cell_index is None:  # Если мышь не над травой или не над ячейкой
             return
-        
+
         rect = self.get_tower_rect(grass_index, cell_index)
 
         if range_radius:
@@ -215,9 +217,9 @@ class GameView:
         pygame.draw.circle(s, (r, g, b, 80), (6, 6), 6)
         self.screen.blit(s, (int(proj.x) - 6, int(proj.y) - 6))
         # Тонкая линия от башни до снаряда
-        pygame.draw.line(self.screen, (r, g, b, 60),
-                         (proj.start_x, proj.start_y),
-                         (int(proj.x) , int(proj.y)), 1)
+        # pygame.draw.line(self.screen, (r, g, b, 60),  # По ситауции
+        #                  (proj.start_x, proj.start_y),
+        #                  (int(proj.x) , int(proj.y)), 1)
 
     def draw_enemy(self, enemy):
         """Отрисовка врага со способностью и без"""
@@ -233,7 +235,7 @@ class GameView:
             size = (55, 55)
         else:
             return
-        
+
         img = pygame.transform.scale(img, size)
         # Координаты левого верхнего угла картинки
         x = enemy.x - size[0] // 2  # Обновляется в реальном времени
@@ -254,6 +256,6 @@ class GameView:
             bar_y = y - 10
             pygame.draw.rect(self.screen, enemy.color, (bar_x, bar_y, bar_width, bar_height))
             pygame.draw.rect(self.screen, Colors.TEXT, (bar_x, bar_y, bar_width, bar_height), 1)
-        
+
         # Рисуется сама картинка врага
         self.screen.blit(img, (x, y))

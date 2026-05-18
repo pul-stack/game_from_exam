@@ -48,18 +48,10 @@ class Characters:
 
         self.lines = lines if lines is not None else random.randint(1, 3)
 
-    def draw(self, screen, x, y):
-        """Отрисовка персонажа"""
-        pass
-
     def update_position(self): 
         """Движение вниз по дорожке"""
         if self.y < 600:
             self.y += self.speed / 60
-
-    def get_damage(self, screen, health):
-        """Получение урона"""
-        pass
 
 
 class Towers:
@@ -77,10 +69,6 @@ class Towers:
         self.attack_timer = 0
         self.attack_speed = 60
 
-
-    def draw(self, screen, x, y):
-        """Отрисовка башни"""
-        pass
 
 class Missile:
     """Снаряд башни, летящий к врагу"""
@@ -102,7 +90,7 @@ class Missile:
         if not self.target or self.target.health <= 0:
             self.alive = False
             return
-            
+
         # Вектор к цели
         dx = self.target.x - self.x
         dy = self.target.y - self.y
