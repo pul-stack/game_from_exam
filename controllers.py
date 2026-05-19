@@ -18,13 +18,18 @@ class GameController:
         self.spawn_timer = 0
         self.spawn_delay = 120 # Каждый 2 секунды
         self.projectiles: list = []
-        self.explosions = []
+        self.explosions : list = []
 
         # Список башен, выбранныый тип, наведение
         self.towers : list = []
         self.selected_tower_type = None  # "v1", "v2", "v3" или None
         self.hovered_grass = None
         self.hovered_cell = None
+
+        # Продажа или улучшение башни
+        self.selected_tower = None
+        self.show_tower_menu = False
+        self.tower_menu_pos = (0, 0)
 
     def update(self):
         """Обновление игры каждый кадр"""
@@ -207,6 +212,15 @@ class GameController:
                     if not self.free_cell(self.hovered_grass, self.hovered_cell):  # Если свободна ячейка
                         self.place_tower(self.hovered_grass, self.hovered_cell)
 
+                # Улучшение и продажа башни
+                self.selected_tower = self.get_tower_art(pos)
+                if self.selected_tower:
+                    self.show_tower_meny = True
+                    self.tower_menu_pos = pos
+                    self.selected_tower_type = None  # Сброс выбора башни из панели
+                else:
+                    self.show_tower_menu = False
+
         return True
 
     # Установка башни
@@ -229,6 +243,23 @@ class GameController:
         self.towers.append(tower)
         self.selected_tower_type = None
 
+    def get_tower_art(self, pos):
+        """Возращает башню по координатам клика или None"""
+        for tower in self.towers:
+            rect = self.view.get_tower_rect(tower.grass_index, tower.cell_index)
+            if rect.collidepoint(pos):
+                return tower
+
+        return None
+
+    def sell_tower(self):
+        """Продажа выбранной башни за 50%"""
+        if self.selected_tower:
+            back = self.selected_tower.price // 2
+            self.money += back
+            self.towers.remove(self.selected_tower)
+            self.selected_tower = None
+            self.show_tower_menu = False
 
     def find_target(self, tower):
         """Находит врага, кто дальше всех в радиусе башни"""

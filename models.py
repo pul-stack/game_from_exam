@@ -69,10 +69,14 @@ class Towers:
         self.attack_timer = 0
         self.attack_speed = 60
 
+        self.level = 1
+        self.base_damage = damage if damage else 0
+        self.base_range = attack_range
+
 
 class Missile:
     """Снаряд башни, летящий к врагу"""
-    def __init__(self,x, y, target, damage, speed=6, color=(255, 255, 100)):
+    def __init__(self, x, y, target, damage, speed=6, color=(255, 255, 100)):
         self.x = x
         self.y = y
         self.target = target
@@ -105,6 +109,7 @@ class Missile:
             self.x += dx / dist * self.speed
             self.y += dy / dist * self.speed
 
+
 class Tower_v1(Towers):
     """Башня первой версии"""
     def __init__(self):
@@ -115,7 +120,8 @@ class Tower_v1(Towers):
             header_color=Colors.TOWER_HEADER_V1,
             price=100,
             attack_range=200
-            )
+        )
+        self.upgrade_cost = 50
 
 
 class Goblins(Characters):
@@ -144,6 +150,7 @@ class Tower_v2(Towers):
             price=240,
             attack_range=260
         )
+        self.upgrade_cost = 100
 
 
 class Tower_v3(Towers):
@@ -157,7 +164,7 @@ class Tower_v3(Towers):
             price=600,
             attack_range=330
         )
-
+        self.upgrade_cost = 250
 
 class Ogres(Characters):
     """Класс для Огров"""
