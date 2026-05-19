@@ -65,13 +65,20 @@ class GameView:
         self.current_health = 200
         self.current_money = 150
 
-    # def draw_field(self):
-    #     self.screen.fill(Colors.FIELD)
+        # Кадры взрыва
+        self.explosions = []
+        for i in range(1, 5):
+            img = pygame.image.load(f"assets/images/{i}_cadr.png")
+            img = pygame.transform.scale(img, (40, 40))
+            self.explosions.append(img)
 
-    #     for pos in self.STRIP_POSITIONS:
-    #         left_edge = pos - self.STRIP_WIDTH // 2
-    #         rect = pygame.Rect(left_edge, 0, self.STRIP_WIDTH, self.SCREEN_HEIGHT)
-    #         pygame.draw.rect(self.screen, Colors.SAND, rect)  # м.б что-то поменять ------------------------
+    def draw_field(self):
+        self.screen.fill(Colors.FIELD)
+
+        for pos in self.STRIP_POSITIONS:
+            left_edge = pos - self.STRIP_WIDTH // 2
+            rect = pygame.Rect(left_edge, 0, self.STRIP_WIDTH, self.SCREEN_HEIGHT)
+            pygame.draw.rect(self.screen, Colors.SAND, rect)  # м.б что-то поменять ------------------------
 
     def draw_menu(self):
         self.screen.blit(self.menu_bg, (0, 0))
@@ -229,7 +236,7 @@ class GameView:
             size = (30, 30)
         elif enemy.enemy_type == "Ogre":
             img = self.ogrch_img
-            size = (40,40)
+            size = (40, 40)
         elif enemy.enemy_type == "Big Bob":
             img = self.big_bob_img
             size = (55, 55)
@@ -259,3 +266,8 @@ class GameView:
 
         # Рисуется сама картинка врага
         self.screen.blit(img, (x, y))
+
+    def draw_explosions(self, explosion):
+        """Отрисовка взрыва"""
+        img = self.explosions[explosion.cadr]
+        self.screen.blit(img, (explosion.x - 20, explosion.y - 20))  # Чтобы сместить взрыв в центр снаряда

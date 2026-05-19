@@ -1,6 +1,6 @@
 import pygame
 from views import GameView
-from models import Goblins, Ogres, Big_Bob, Tower_v1, Tower_v2, Tower_v3, Abilities, Missile
+from models import Goblins, Ogres, Big_Bob, Tower_v1, Tower_v2, Tower_v3, Abilities, Missile, Explosion
 import random
 
 
@@ -13,11 +13,12 @@ class GameController:
         self.money = 100
         self.health = 200
 
-        # Мобы и их спавн, снаряды
+        # Мобы и их спавн, снаряды и взрывы
         self.enemies : list = []
         self.spawn_timer = 0
         self.spawn_delay = 120 # Каждый 2 секунды
         self.projectiles: list = []
+        self.explosions = []
 
         # Список башен, выбранныый тип, наведение
         self.towers : list = []
@@ -46,14 +47,22 @@ class GameController:
                         self.health = 0
                         self.game_state = "game_over"
 
+            # Обновлене снарядов
             for proj in self.projectiles[:]:
                 proj.update()
                 if not proj.alive:
                     self.projectiles.remove(proj)
                     # Если снаряд убил цель
+                    self.explosions.append(Explosion(proj.x, proj.y))
                     if proj.target and proj.target.health <= 0 and proj.target in self.enemies:
                         self.money += proj.target.give_money
                         self.enemies.remove(proj.target)
+
+            # Обновление взрывов
+            for exp in self.explosions[:]:
+                exp.update()
+                if not exp.alive:
+                    self.explosions.remove(exp)
 
             # Стрельба башен
             for tower in self.towers:
@@ -71,7 +80,7 @@ class GameController:
                         if isinstance(tower, Tower_v1):
                             missile_color = (255, 255, 100)  # Жёлтый
                         elif isinstance(tower, Tower_v2):
-                            missile_color = (100, 100 , 255)  # Синий
+                            missile_color = (100, 100, 255)  # Синий
                         elif isinstance(tower, Tower_v3):
                             missile_color = (255, 80, 80)  # Красный
                         else:
@@ -168,6 +177,10 @@ class GameController:
             for enemy in self.enemies:
                 self.view.draw_enemy(enemy)
 
+            # Отрисовка взрывов
+            for exp in self.explosions:
+                self.view.draw_explosions(exp)
+
     def work_event(self, event):  # handle_event
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
@@ -250,3 +263,4 @@ class GameController:
         self.hovered_cell = None
         self.spawn_timer = 0
         self.projectiles = []
+        self.explosions = []

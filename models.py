@@ -187,3 +187,21 @@ class Big_Bob(Characters):
             color=Colors.BIG_BOB
         )
         self.enemy_type = "Big Bob"
+
+
+class Explosion:
+    """Взрыв при попадании снаряда"""
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.cadr = 0
+        self.timer = 0
+        self.alive = True
+
+    def update(self):
+        self.timer += 1
+        if self.timer >= 5:
+            self.timer = 0
+            self.cadr += 1
+            if self.cadr >= 4:
+                self.alive = False
