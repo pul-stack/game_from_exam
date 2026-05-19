@@ -91,7 +91,9 @@ class GameController:
                         else:
                             missile_color = (255, 255, 100)
 
-                        self.projectiles.append(Missile(tower_x, tower_y, target, tower.damage, color=missile_color))
+                        num_missiles = 2 if tower.level >= 5 else 1
+                        for _ in range(num_missiles):
+                            self.projectiles.append(Missile(tower_x, tower_y, target, tower.damage, color=missile_color))
 
             # Обновление наведения мыши
             self.update_hover()
@@ -198,6 +200,19 @@ class GameController:
                     return False
 
             elif self.game_state == "playing":
+
+                # Кнопки меню башни
+                if self.show_tower_menu:
+                    upgrade_rect = pygame.Rect(self.tower_menu_pos[0] - 50, self.tower_menu_pos[1] - 60, 100, 25)
+                    sell_rect = pygame.Rect(self.tower_menu_pos[0] - 50, self.tower_menu_pos[1] - 30, 100, 25)
+
+                    if upgrade_rect.collidepoint(pos):
+                        self.upgrade_tower()
+                    elif sell_rect.collidepoint(pos):
+                        self.sell_tower()
+                    else:
+                        self.show_tower_menu = False
+
                 # Клик по панели — выбор башни
                 if pos[1] >= 600:
                     if 40 <= pos[0] <= 220:
@@ -260,6 +275,21 @@ class GameController:
             self.towers.remove(self.selected_tower)
             self.selected_tower = None
             self.show_tower_menu = False
+
+    def upgrade_tower(self):
+        """Улучшение башни до след. уровня (макс. 5)"""
+        tower = self.selected_tower
+        if not tower or tower.level >= 5:
+            return
+
+        if self.money < tower.upgraed_cost:
+            return
+
+        self.money -= tower.upgrade_cost
+        tower.level += 1
+        tower.damage += int(tower.base_damage * 0.2)
+        tower.attack_range += 20
+        tower.upgrade_cost += tower.upgrade_cost // 2
 
     def find_target(self, tower):
         """Находит врага, кто дальше всех в радиусе башни"""
