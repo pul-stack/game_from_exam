@@ -15,7 +15,7 @@ def main():
     game_controller = GameController(screen)
 
     running = True
-    while running:  
+    while running:
         clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

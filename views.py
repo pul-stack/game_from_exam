@@ -271,3 +271,23 @@ class GameView:
         """Отрисовка взрыва"""
         img = self.explosions[explosion.cadr]
         self.screen.blit(img, (explosion.x - 20, explosion.y - 20))  # Чтобы сместить взрыв в центр снаряда
+
+    def draw_tower_menu(self, tower, pos):
+        """Меню улучшения/продажи башни"""
+        upgrade_rect = pygame.Rect(pos[0] - 50, pos[1]- 60, 100, 25)
+        sell_rect = pygame.Rect(pos[0] - 50, pos[1] - 30, 100, 25)
+
+        # Фон меню
+        pygame.draw.rect(self.screen, Colors.BUTTON, upgrade_rect, border_radius=15)
+        pygame.draw.rect(self.screen, Colors.BUTTON, sell_rect, border_radius=15)
+
+        # Текст
+        upg_text = self.font_small.render(f"Улучшить ({tower.upgrade_cost})", True, Colors.TEXT)
+        sell_text = self.font_small.render(f"Продать ({tower.total_invested // 2})", True, Colors.TEXT)
+
+        self.screen.blit(upg_text, (pos[0] - 45, pos[1] - 57))
+        self.screen.blit(sell_text, (pos[0] - 45, pos[1] - 27))
+
+        # Если 5 уровень - кнопка улусшения неактивна
+        if tower.level >= 5:
+            pygame.draw.rect(self.screen, (255, 80, 80), upgrade_rect, 2, border_radius=15)

@@ -72,6 +72,7 @@ class Towers:
         self.level = 1
         self.base_damage = damage if damage else 0
         self.base_range = attack_range
+        self.total_invested = price if price else 0  # Общая вложенная сумма
 
 
 class Missile:

@@ -1,42 +1,32 @@
 import pygame
+from controllers import GameController
+from models import Tower_v1
 
 pygame.init()
-screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption("Зелёное поле с песочными линиями")
-clock = pygame.time.Clock()
-running = True
 
-# ЦВЕТА
-GREEN_FIELD = (20, 160, 44)      # Зелёное поле
-SAND_COLOR = (238, 214, 175)     # Песочный цвет
+screen = pygame.Surface((800, 810))
+gc = GameController(screen)
 
-# Размеры
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
 
-# Ширина каждой песочной полосы
-STRIP_WIDTH = 80
+def test_free_cell_empty():
+    """Пустая ячейка — свободна"""
+    gc.towers = []
+    assert gc.free_cell(1, 2) == False
 
-# Позиции полос (равномерно распределены)
-# 800 / 4 = 200 между центрами
-STRIP_POSITIONS = [200, 400, 600]  # Центры полос
 
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    
-    # Заливка зелёным
-    screen.fill(GREEN_FIELD)
-    
-    # Рисуем 3 широкие песочные полосы
-    for pos in STRIP_POSITIONS:
-        # Вычисляем левый край полосы
-        left_edge = pos - STRIP_WIDTH // 2
-        pygame.draw.rect(screen, SAND_COLOR, 
-                        (left_edge, 0, STRIP_WIDTH, SCREEN_HEIGHT))
-    
-    pygame.display.flip()
-    clock.tick(60)
+def test_free_cell_occupied():
+    """Ячейка занята — занята"""
+    tower = Tower_v1()
+    tower.grass_index = 1
+    tower.cell_index = 2
+    gc.towers = [tower]
+    assert gc.free_cell(1, 2) == True
 
-pygame.quit()
+
+def test_free_cell_other_cell():
+    """Другая ячейка — свободна"""
+    tower = Tower_v1()
+    tower.grass_index = 1
+    tower.cell_index = 2
+    gc.towers = [tower]
+    assert gc.free_cell(1, 0) == False

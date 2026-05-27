@@ -31,6 +31,12 @@ class GameController:
         self.show_tower_menu = False
         self.tower_menu_pos = (0, 0)
 
+        # Сложность игры
+        self.difficulty = "medium"
+        self.difficulty_settigs = {
+            "easy": {"money": 600, "health": 300, "enemy_dmg": 1.0}
+        }
+
     def update(self):
         """Обновление игры каждый кадр"""
         if self.game_state == "playing":
@@ -176,6 +182,10 @@ class GameController:
             for tower in self.towers:
                 self.view.draw_tower_on_field(tower)
 
+            # Меню башни
+            if self.show_tower_menu and self.selected_tower:
+                self.view.draw_tower_menu(self.selected_tower, self.tower_menu_pos)
+
             # Отрисовка снарядов
             for proj in self.projectiles:
                 self.view.draw_projectile(proj)
@@ -208,10 +218,23 @@ class GameController:
 
                     if upgrade_rect.collidepoint(pos):
                         self.upgrade_tower()
+                        return True  # Выходим, чтобы не открывать меню заново
                     elif sell_rect.collidepoint(pos):
                         self.sell_tower()
+                        return True
                     else:
                         self.show_tower_menu = False
+                        if not self.get_tower_at(pos):
+                            return True
+
+                # Улучшение и продажа башни
+                self.selected_tower = self.get_tower_at(pos)
+                if self.selected_tower:
+                    self.show_tower_menu = True
+                    self.tower_menu_pos = pos
+                    self.selected_tower_type = None  # Сброс выбора башни из панели
+                else:
+                    self.show_tower_menu = False
 
                 # Клик по панели — выбор башни
                 if pos[1] >= 600:
@@ -226,15 +249,6 @@ class GameController:
                 elif self.selected_tower_type and self.hovered_grass is not None and self.hovered_cell is not None:
                     if not self.free_cell(self.hovered_grass, self.hovered_cell):  # Если свободна ячейка
                         self.place_tower(self.hovered_grass, self.hovered_cell)
-
-                # Улучшение и продажа башни
-                self.selected_tower = self.get_tower_art(pos)
-                if self.selected_tower:
-                    self.show_tower_meny = True
-                    self.tower_menu_pos = pos
-                    self.selected_tower_type = None  # Сброс выбора башни из панели
-                else:
-                    self.show_tower_menu = False
 
         return True
 
@@ -258,7 +272,7 @@ class GameController:
         self.towers.append(tower)
         self.selected_tower_type = None
 
-    def get_tower_art(self, pos):
+    def get_tower_at(self, pos):
         """Возращает башню по координатам клика или None"""
         for tower in self.towers:
             rect = self.view.get_tower_rect(tower.grass_index, tower.cell_index)
@@ -270,7 +284,7 @@ class GameController:
     def sell_tower(self):
         """Продажа выбранной башни за 50%"""
         if self.selected_tower:
-            back = self.selected_tower.price // 2
+            back = self.selected_tower.total_invested // 2
             self.money += back
             self.towers.remove(self.selected_tower)
             self.selected_tower = None
@@ -282,11 +296,12 @@ class GameController:
         if not tower or tower.level >= 5:
             return
 
-        if self.money < tower.upgraed_cost:
+        if self.money < tower.upgrade_cost:
             return
 
         self.money -= tower.upgrade_cost
         tower.level += 1
+        tower.total_invested += tower.upgrade_cost
         tower.damage += int(tower.base_damage * 0.2)
         tower.attack_range += 20
         tower.upgrade_cost += tower.upgrade_cost // 2
@@ -315,7 +330,7 @@ class GameController:
 
     def start_new_game(self):
         self.game_state = "playing"
-        self.money = 1500
+        self.money = 10000
         self.health = 200
         self.enemies = []
         self.towers = []
@@ -325,3 +340,6 @@ class GameController:
         self.spawn_timer = 0
         self.projectiles = []
         self.explosions = []
+        self.selected_tower = None
+        self.show_tower_menu = False
+        self.tower_menu_pos = (0, 0)
