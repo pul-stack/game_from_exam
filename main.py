@@ -10,7 +10,7 @@ def main():
 
     screen = pygame.display.set_mode((GameView.SCREEN_WIDTH, GameView.SCREEN_HEIGHT), 0, 32)
     pygame.display.set_caption('Tower Defense in the Middle Ages')
-    clock = pygame.time.Clock()
+    clock = pygame.time.Clock() # таймер для контроля ФПС
 
     game_controller = GameController(screen)
 

@@ -24,6 +24,8 @@ class GameView:
     """Класс, отвечающий за отрисовку игры"""
     # Параметры для экрана игры
     SCREEN_WIDTH, SCREEN_HEIGHT = 800, 810
+
+    # Для определения сетки (сейчас не используется)
     GRID_SIZE = 40
     GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
     GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
@@ -99,9 +101,10 @@ class GameView:
             rect = pygame.Rect(300, y, 200, 50)
             color = Colors.BUTTON_ACTIVE if rect.collidepoint(mouse_pos) else Colors.BUTTON
 
-            pygame.draw.rect(self.screen, color, rect, border_radius=12)
-            pygame.draw.rect(self.screen, Colors.TEXT, rect, 2, border_radius=12)
+            pygame.draw.rect(self.screen, color, rect, border_radius=12)  # Кнопка
+            pygame.draw.rect(self.screen, Colors.TEXT, rect, 2, border_radius=12)  # Рамка вокруг кнопки
 
+            # Текст внутри кнопки
             but_text = self.font_medium.render(text, True, Colors.TEXT)
             text_rect = but_text.get_rect(center=rect.center)
             self.screen.blit(but_text, text_rect)
@@ -195,6 +198,7 @@ class GameView:
 
         rect = self.get_tower_rect(grass_index, cell_index)
 
+        # Радиус атаки
         if range_radius:
             center_x = self.GRASS_CENTERS[grass_index]
             center_y = self.TOWER_CELLS_Y[cell_index] + self.TOWER_HEIGHT // 2
@@ -218,19 +222,11 @@ class GameView:
         """Отрисовка снаряда с хвостом"""
         r, g, b = proj.color
         # Основной снаряд (яркая точка)
-        pygame.draw.circle(self.screen, proj.color, (int(proj.x), int(proj.y)), 4)
-        # Свечение вокруг снаряда
-        s = pygame.Surface((12, 12), pygame.SRCALPHA)
-        pygame.draw.circle(s, (r, g, b, 80), (6, 6), 6)
-        self.screen.blit(s, (int(proj.x) - 6, int(proj.y) - 6))
-        # Тонкая линия от башни до снаряда
-        # pygame.draw.line(self.screen, (r, g, b, 60),  # По ситауции
-        #                  (proj.start_x, proj.start_y),
-        #                  (int(proj.x) , int(proj.y)), 1)
+        pygame.draw.circle(self.screen, proj.color, (int(proj.x), int(proj.y)), radius=4)
 
     def draw_enemy(self, enemy):
         """Отрисовка врага со способностью и без"""
-        # Выбор картинки и размера по типу врага    
+        # Выбор картинки и размера по типу врага
         if enemy.enemy_type == "Goblin":
             img = self.goblin_img
             size = (30, 30)
@@ -285,8 +281,8 @@ class GameView:
         upg_text = self.font_small.render(f"Улучшить ({tower.upgrade_cost})", True, Colors.TEXT)
         sell_text = self.font_small.render(f"Продать ({tower.total_invested // 2})", True, Colors.TEXT)
 
-        self.screen.blit(upg_text, (pos[0] - 45, pos[1] - 57))
-        self.screen.blit(sell_text, (pos[0] - 45, pos[1] - 27))
+        self.screen.blit(upg_text, (pos[0] - 51, pos[1] - 57))
+        self.screen.blit(sell_text, (pos[0] - 40, pos[1] - 27))
 
         # Если 5 уровень - кнопка улусшения неактивна
         if tower.level >= 5:

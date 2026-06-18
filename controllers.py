@@ -8,7 +8,7 @@ class GameController:
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
         self.view = GameView(screen)
-        self.state = None
+        self.state = None  # Пока не используется
         self.game_state = "menu"  # menu, playing, game_over
         self.money = 100
         self.health = 200
@@ -33,7 +33,7 @@ class GameController:
 
         # Сложность игры
         self.difficulty = "medium"
-        self.difficulty_settigs = {
+        self.difficulty_settings = {
             "easy": {"money": 600, "health": 300, "enemy_dmg": 1.0, "enemy_hp": 1.0, "enemy_speed": 1.0, "spawn_delay": 120},
             "medium": {"money": 400, "health": 200, "enemy_dmg": 1.2, "enemy_hp": 1.2, "enemy_speed": 1.2, "spawn_delay": 96},
             "hard": {"money": 200, "health": 100, "enemy_dmg": 1.4, "enemy_hp": 1.4, "enemy_speed": 1.4, "spawn_delay": 72}
