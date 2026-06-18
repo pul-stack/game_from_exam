@@ -5,10 +5,12 @@ import random
 
 
 class GameController:
+
+    SPEED = 60
+
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
         self.view = GameView(screen)
-        self.state = None  # Пока не используется
         self.game_state = "menu"  # menu, playing, game_over
         self.money = 100
         self.health = 200
@@ -168,9 +170,9 @@ class GameController:
 
     def draw(self):
         if self.game_state == "menu":
-            self.menu_buttons = self.view.draw_menu()
+            self.view.draw_menu()
         elif self.game_state == "settings":
-            self.settings_buttons = self.view.draw_settings()
+            self.view.draw_settings()
         elif self.game_state == "playing":
             self.view.draw_field()
 

@@ -1,5 +1,4 @@
 import pygame
-from random import randint
 
 
 class Colors:
@@ -25,16 +24,9 @@ class GameView:
     # Параметры для экрана игры
     SCREEN_WIDTH, SCREEN_HEIGHT = 800, 810
 
-    # Для определения сетки (сейчас не используется)
-    GRID_SIZE = 40
-    GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
-    GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
-
     # Параметры для поля
     STRIP_POSITIONS = [200, 400, 600]  # Центры дорожек
     STRIP_WIDTH = 80  # Ширина
-
-    SPEED = 60
 
     GRASS_CENTERS = [80, 300, 500, 720]  # Центры травы по x
 
@@ -63,9 +55,6 @@ class GameView:
         self.tower_v3_icon = pygame.transform.scale(self.tower_v3_img, (180, 150))
 
         self.menu_bg = pygame.transform.scale(self.menu_bg, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-
-        self.current_health = 200
-        self.current_money = 150
 
         # Кадры взрыва
         self.explosions = []

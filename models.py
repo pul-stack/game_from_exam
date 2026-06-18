@@ -1,6 +1,6 @@
-import pygame
 import random
-from views import GameView, Colors
+from views import Colors
+
 
 class Abilities:
     """Класс способностей для врагов"""
@@ -21,10 +21,8 @@ class Abilities:
         name = random.choices(names, weights=chances, k=1)[0]
         if name is None:
             return
-        
+
         stats = Abilities.abilities[name]
-        if "strong" in stats:
-            enemy.strong = int(enemy.strong * stats["strong"])
         if "health" in stats:
             enemy.health = int(enemy.health * stats["health"])
         if "speed" in stats:
@@ -34,13 +32,14 @@ class Abilities:
         if "color" in stats:
             enemy.color = stats["color"]
 
+
 class Characters:
     """Класс для переопределения персонажей"""
 
-    def __init__(self, health=None, damage=None, speed=GameView.SPEED, lines=None, ability=None, give_money=None, color=None):
+    def __init__(self, health=None, damage=None, speed=60, lines=None, ability=None, give_money=None, color=None):
         self.health = health
         self.damage = damage
-        self.speed = speed if speed is not None else GameView.SPEED
+        self.speed = speed if speed is not None else 60
         self.give_money = give_money
         self.color = color
 
@@ -48,19 +47,14 @@ class Characters:
 
         self.lines = lines if lines is not None else random.randint(1, 3)
 
-    def update_position(self): 
-        """Движение вниз по дорожке"""
-        if self.y < 600:
-            self.y += self.speed / 60
-
 
 class Towers:
     """Класс для переопределения башен"""
 
-    def __init__(self, health=None, damage=None, speed=GameView.SPEED, front_color=None, header_color=None, price=None, attack_range=120):
+    def __init__(self, health=None, damage=None, speed=60, front_color=None, header_color=None, price=None, attack_range=120):
         self.health = health
         self.damage = damage
-        self.speed = speed or GameView.SPEED
+        self.speed = speed or 60
         self.front_color = front_color
         self.header_color = header_color
         self.price = price
