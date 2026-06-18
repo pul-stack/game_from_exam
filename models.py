@@ -36,7 +36,7 @@ class Abilities:
 class Characters:
     """Класс для переопределения персонажей"""
 
-    def __init__(self, health=None, damage=None, speed=60, lines=None, ability=None, give_money=None, color=None):
+    def __init__(self, health=None, damage=None, speed=60, ability=None, give_money=None, color=None):
         self.health = health
         self.damage = damage
         self.speed = speed if speed is not None else 60
@@ -45,16 +45,14 @@ class Characters:
 
         self.enemy_type = None  # "Goblin", "Ogre", "Big Bob"
 
-        self.lines = lines if lines is not None else random.randint(1, 3)
+        # self.lines = lines if lines is not None else random.randint(1, 3)
 
 
 class Towers:
     """Класс для переопределения башен"""
 
-    def __init__(self, health=None, damage=None, speed=60, front_color=None, header_color=None, price=None, attack_range=120):
-        self.health = health
+    def __init__(self, damage=None, front_color=None, header_color=None, price=None, attack_range=120):
         self.damage = damage
-        self.speed = speed or 60
         self.front_color = front_color
         self.header_color = header_color
         self.price = price
@@ -65,7 +63,6 @@ class Towers:
 
         self.level = 1
         self.base_damage = damage if damage else 0
-        self.base_range = attack_range
         self.total_invested = price if price else 0  # Общая вложенная сумма
 
 
@@ -110,7 +107,6 @@ class Tower_v1(Towers):
     def __init__(self):
         super().__init__(
             damage=30,
-            speed=10,
             front_color=Colors.TOWER_FRONT_V1,
             header_color=Colors.TOWER_HEADER_V1,
             price=100,
@@ -126,7 +122,6 @@ class Goblins(Characters):
             health=70,
             damage=14,
             speed=23,
-            lines=None,
             ability=None,
             give_money=20,
             color=Colors.GOBLINS
@@ -139,7 +134,6 @@ class Tower_v2(Towers):
     def __init__(self):
         super().__init__(
             damage=54,
-            speed=10,
             front_color=Colors.TOWER_FRONT_V2,
             header_color=Colors.TOWER_HEADER_V2,
             price=240,
@@ -153,13 +147,13 @@ class Tower_v3(Towers):
     def __init__(self):
         super().__init__(
             damage=80,
-            speed=10,
             front_color=Colors.TOWER_FRONT_V3,
             header_color=Colors.TOWER_HEADER_V3,
             price=600,
             attack_range=330
         )
         self.upgrade_cost = 250
+
 
 class Ogres(Characters):
     """Класс для Огров"""
@@ -168,7 +162,6 @@ class Ogres(Characters):
             health=140,
             damage=28,
             speed=18,
-            lines=None,
             ability=None,
             give_money=50,
             color=Colors.OGRES
@@ -183,7 +176,6 @@ class Big_Bob(Characters):
             health=800,
             damage=80,
             speed=14,
-            lines=None,
             ability=None,
             give_money=200,
             color=Colors.BIG_BOB

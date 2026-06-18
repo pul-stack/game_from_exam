@@ -5,9 +5,6 @@ import random
 
 
 class GameController:
-
-    SPEED = 60
-
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
         self.view = GameView(screen)
