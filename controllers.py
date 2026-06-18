@@ -35,7 +35,7 @@ class GameController:
         self.difficulty_settings = {
             "easy": {"money": 600, "health": 350, "enemy_dmg": 1.0, "enemy_hp": 1.0, "enemy_speed": 1.0, "spawn_delay": 120},
             "medium": {"money": 400, "health": 250, "enemy_dmg": 1.13, "enemy_hp": 1.13, "enemy_speed": 1.1, "spawn_delay": 105},
-            "hard": {"money": 200, "health": 150, "enemy_dmg": 1.26, "enemy_hp": 1.26, "enemy_speed": 1.2, "spawn_delay": 90}
+            "hard": {"money": 2000, "health": 150, "enemy_dmg": 1.26, "enemy_hp": 1.26, "enemy_speed": 1.2, "spawn_delay": 90}
         }
 
     def update(self):
@@ -99,8 +99,18 @@ class GameController:
                             missile_color = (255, 255, 100)
 
                         num_missiles = 2 if tower.level >= 5 else 1
-                        for _ in range(num_missiles):
-                            self.projectiles.append(Missile(tower_x, tower_y, target, tower.damage, color=missile_color))
+                        # print(f"Уровень: {tower.level}, снарядов {num_missiles}")
+                        for i in range(num_missiles):
+                            # Разброс для второго снаряда
+                            offset_x = random.randint(-8, 8) if i == 1 else 0
+                            offset_y = random.randint(-8, 8) if i == 1 else 0
+                            self.projectiles.append(Missile(
+                                tower_x + offset_x,
+                                tower_y + offset_y,
+                                target,
+                                tower.damage,
+                                color=missile_color
+                                ))
 
             # Обновление наведения мыши
             self.update_hover()
