@@ -301,6 +301,13 @@ class GameView:
         self.screen.blit(s, (0, 0))
 
         go_text = self.font_large.render("GAME OVER", True, (255, 80, 80))
+        go_rect = go_text.get_rect(center=(self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2 - 50))
+        self.screen.blit(go_text, go_rect)
+
+        # Подсказка
+        help_text = self.font_small.render("Нажмите ESC, чтобы выйти из игры", True, Colors.TEXT)
+        help_rect = help_text.get_rect(center=(self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2 + 30))
+        self.screen.blit(help_text, help_rect)
 
     def draw_tower_menu(self, tower, pos):
         """Меню улучшения/продажи башни"""

@@ -207,6 +207,14 @@ class GameController:
             for exp in self.explosions:
                 self.view.draw_explosions(exp)
 
+        elif self.game_state == "game_over":
+            self.view.draw_field()
+            for tower in self.towers:
+                self.view.draw_tower_on_field(tower)
+            for enemy in self.enemies:
+                self.view.draw_enemy(enemy)
+            self.view.draw_game_over()
+
     def work_event(self, event):  # handle_event
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
