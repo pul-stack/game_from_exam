@@ -34,15 +34,15 @@ class GameController:
         # Сложность игры
         self.difficulty = "medium"
         self.difficulty_settings = {
-            "easy": {"money": 600, "health": 300, "enemy_dmg": 1.0, "enemy_hp": 1.0, "enemy_speed": 1.0, "spawn_delay": 120},
-            "medium": {"money": 400, "health": 200, "enemy_dmg": 1.2, "enemy_hp": 1.2, "enemy_speed": 1.2, "spawn_delay": 96},
-            "hard": {"money": 200, "health": 100, "enemy_dmg": 1.4, "enemy_hp": 1.4, "enemy_speed": 1.4, "spawn_delay": 72}
+            "easy": {"money": 600, "health": 350, "enemy_dmg": 1.0, "enemy_hp": 1.0, "enemy_speed": 1.0, "spawn_delay": 120},
+            "medium": {"money": 400, "health": 250, "enemy_dmg": 1.13, "enemy_hp": 1.13, "enemy_speed": 1.1, "spawn_delay": 105},
+            "hard": {"money": 200, "health": 150, "enemy_dmg": 1.26, "enemy_hp": 1.26, "enemy_speed": 1.2, "spawn_delay": 90}
         }
 
     def update(self):
         """Обновление игры каждый кадр"""
         if self.game_state == "playing":
-            self.spawn_timer += 1  # За 2 секунлы будет 120
+            self.spawn_timer += 1  # За 2 секунлы будет столько enemy, какая сложность стоит
             if self.spawn_timer >= self.spawn_delay:
                 self.spawn_timer = 0
                 self.spawn_enemy()
@@ -145,6 +145,11 @@ class GameController:
         enemy = enemy_type()  # Создаётся рандомный юнит (из-за строки выше)
         Abilities.get_ability(enemy)
 
+        settings = self.difficulty_settings[self.difficulty]
+        enemy.health = int(enemy.health * settings["enemy_hp"])
+        enemy.damage = int(enemy.damage * settings["enemy_dmg"])
+        enemy.speed = int(enemy.speed * settings["enemy_speed"])
+
         strip = random.choice(GameView.STRIP_POSITIONS)  
         enemy.x = strip + random.randint(-20, 20)
         enemy.y = -40
@@ -164,6 +169,8 @@ class GameController:
     def draw(self):
         if self.game_state == "menu":
             self.menu_buttons = self.view.draw_menu()
+        elif self.game_state == "settings":
+            self.settings_buttons = self.view.draw_settings()
         elif self.game_state == "playing":
             self.view.draw_field()
 
@@ -208,11 +215,27 @@ class GameController:
                 buttons = self.view.draw_menu()
                 if buttons.get("start") and buttons["start"].collidepoint(pos):
                     self.start_new_game()
+                elif buttons.get("settings") and buttons["settings"].collidepoint(pos):
+                    self.game_state = "settings"
                 elif buttons.get("exit") and buttons["exit"].collidepoint(pos):
                     return False
 
-            elif self.game_state == "playing":
+            elif self.game_state == "settings":
+                buttons = self.view.draw_settings()
+                if buttons.get("easy") and buttons["easy"].collidepoint(pos):
+                    self.difficulty = "easy"
+                    self.game_state = "menu"
+                    return True
+                elif buttons.get("medium") and buttons["medium"].collidepoint(pos):
+                    self.difficulty = "medium"
+                    self.game_state = "menu"
+                    return True
+                elif buttons.get("hard") and buttons["hard"].collidepoint(pos):
+                    self.difficulty = "hard"
+                    self.game_state = "menu"
+                    return True
 
+            elif self.game_state == "playing":
                 # Кнопки меню башни
                 if self.show_tower_menu:
                     upgrade_rect = pygame.Rect(self.tower_menu_pos[0] - 50, self.tower_menu_pos[1] - 60, 100, 25)
@@ -332,8 +355,6 @@ class GameController:
 
     def start_new_game(self):
         self.game_state = "playing"
-        self.money = 10000
-        self.health = 200
         self.enemies = []
         self.towers = []
         self.selected_tower_type = None
@@ -345,3 +366,7 @@ class GameController:
         self.selected_tower = None
         self.show_tower_menu = False
         self.tower_menu_pos = (0, 0)
+        settings = self.difficulty_settings[self.difficulty]
+        self.money = settings["money"]
+        self.health = settings["health"]
+        self.spawn_delay = settings["spawn_delay"]

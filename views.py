@@ -96,7 +96,7 @@ class GameView:
         buttons = {}
         y = 440
 
-        for text, action in [("Start new game", "start"), ("Exit", 'exit')]:
+        for text, action in [("Start new game", "start"), ("Settings", "settings"), ("Exit", "exit")]:
             mouse_pos = pygame.mouse.get_pos()
             rect = pygame.Rect(300, y, 200, 50)
             color = Colors.BUTTON_ACTIVE if rect.collidepoint(mouse_pos) else Colors.BUTTON
@@ -158,6 +158,31 @@ class GameView:
         # Иконка монетки
         money_icon = pygame.transform.scale(self.money_img, (60, 60))
         self.screen.blit(money_icon, (-18, 620))
+
+    def draw_settings(self):
+        self.screen.blit(self.menu_bg, (0, 0))
+
+        title = self.font_large.render("Difficulty", True, Colors.TEXT)
+        title_rect = title.get_rect(center=(400, 150))
+        self.screen.blit(title, title_rect)
+
+        buttons = {}
+        y = 340
+        for text, action in [("Easy", "easy"), ("Medium", "medium"), ("Hard", "hard")]:
+            mouse_pos = pygame.mouse.get_pos()
+            rect = pygame.Rect(300, y, 200, 50)
+            color = Colors.BUTTON_ACTIVE if rect.collidepoint(mouse_pos) else Colors.BUTTON
+
+            pygame.draw.rect(self.screen, color, rect, border_radius=12)
+            pygame.draw.rect(self.screen, Colors.TEXT, rect, 2, border_radius=12)
+
+            but_text = self.font_medium.render(text, True, Colors.TEXT)
+            text_rect = but_text.get_rect(center=rect.center)
+            self.screen.blit(but_text, text_rect)
+            buttons[action] = rect
+            y += 70
+
+        return buttons
 
     # Возвращает rect для башни по индексам
     def get_tower_rect(self, grass_index, cell_index):
@@ -267,6 +292,15 @@ class GameView:
         """Отрисовка взрыва"""
         img = self.explosions[explosion.cadr]
         self.screen.blit(img, (explosion.x - 20, explosion.y - 20))  # Чтобы сместить взрыв в центр снаряда
+
+    def draw_game_over(self):
+        "Экран поражения"
+        # Полупрозрачный тёмный фон на весь экран
+        s = pygame.Surface((self.SCREEN_WIDTH, self.SCREEN_HEIGHT), pygame.SRCALPHA)
+        s.fill((0, 0, 0, 180))
+        self.screen.blit(s, (0, 0))
+
+        go_text = self.font_large.render("GAME OVER", True, (255, 80, 80))
 
     def draw_tower_menu(self, tower, pos):
         """Меню улучшения/продажи башни"""
