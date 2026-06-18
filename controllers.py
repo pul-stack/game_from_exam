@@ -99,21 +99,42 @@ class GameController:
                             missile_color = (255, 255, 100)
 
                         num_missiles = 2 if tower.level >= 5 else 1
-                        # print(f"Уровень: {tower.level}, снарядов {num_missiles}")
-                        for i in range(num_missiles):
-                            # Разброс для второго снаряда
-                            offset_x = random.randint(-8, 8) if i == 1 else 0
-                            offset_y = random.randint(-8, 8) if i == 1 else 0
-                            self.projectiles.append(Missile(
-                                tower_x + offset_x,
-                                tower_y + offset_y,
-                                target,
-                                tower.damage,
-                                color=missile_color
-                                ))
+                        targets = []
+                        if num_missiles == 1:
+                            targets = [target]
+                        else:
+                            # Первая цель - самая близкая к замку
+                            targets.append(target)
+                            # Вторая цель - следующая по близости к замку
+                            second_target = self.find_second_target(tower, target)
+                            if second_target:
+                                targets.append(second_target)
+
+                            for target in targets:
+                                self.projectiles.append(Missile(tower_x, tower_y, target, tower.damage, color=missile_color))
 
             # Обновление наведения мыши
             self.update_hover()
+
+    def find_second_target(self, tower, first_target):
+        """Находит второго врага в радиусе башни"""
+        tower_x = GameView.GRASS_CENTERS[tower.grass_index]
+        tower_y = GameView.TOWER_CELLS_Y[tower.cell_index] + GameView.TOWER_HEIGHT // 2
+
+        best = None
+        best_y = -1
+
+        for enemy in self.enemies:
+            if enemy is first_target:
+                continue
+            dx = tower_x - enemy.x
+            dy = tower_y - enemy.y
+            dist = (dx**2 + dy**2) ** 0.5
+            if dist <= tower.attack_range and enemy.y > best_y:
+                best_y = enemy.y
+                best = enemy
+
+        return best
 
     # Определение над какой ячейкой мышь
     def update_hover(self):
