@@ -2,7 +2,8 @@ import pygame
 from views import GameView
 from models import Goblins, Ogres, Big_Bob, Tower_v1, Tower_v2, Tower_v3, Abilities, Missile, Explosion
 import random
-from constants import GRASS_CENTERS, TOWER_CELLS_Y, TOWER_HEIGHT, STRIP_POSITIONS, TOWER_WIDTH
+from constants import (GRASS_CENTERS, TOWER_CELLS_Y, TOWER_HEIGHT, STRIP_POSITIONS, TOWER_WIDTH,
+                       PANEL_Y, BASE_Y, TOWER_CLICK_ZONES)
 
 
 class GameController:
@@ -52,11 +53,11 @@ class GameController:
                 enemy.y += enemy.speed / 60
 
                 # Снижение hp базы
-                if enemy.y >= 581:
-                    self.health -= enemy.damage  # Надо сделать формулу какую-то
+                if enemy.y >= BASE_Y:
+                    self.health -= enemy.damage
                     self.enemies.remove(enemy)
 
-                    if self.health <= 0:  # Где отображается hp?
+                    if self.health <= 0:
                         self.health = 0
                         self.game_state = "game_over"
 
@@ -111,8 +112,8 @@ class GameController:
                             if second_target:
                                 targets.append(second_target)
 
-                            for target in targets:
-                                self.projectiles.append(Missile(tower_x, tower_y, target, tower.damage, color=missile_color))
+                        for t in targets:
+                            self.projectiles.append(Missile(tower_x, tower_y, t, tower.damage, color=missile_color))
 
             # Обновление наведения мыши
             self.update_hover()
@@ -141,7 +142,7 @@ class GameController:
     def update_hover(self):
         mouse_pos = pygame.mouse.get_pos()
 
-        if mouse_pos[1] >= 600:
+        if mouse_pos[1] >= PANEL_Y:
             self.hovered_grass = None  # Индекс линии травы
             self.hovered_cell = None  # Индекс ячейки по вертикали
             return
@@ -159,8 +160,8 @@ class GameController:
                     self.hovered_cell = i
                     break
 
-    # Проверка занятости ячейки  -> True, если занята
-    def free_cell(self, grass_index, cell_index):
+    def is_cell_occupied(self, grass_index, cell_index):
+        """Возращает True, если ячейка уже занята башней"""
         for tower in self.towers:
             if tower.grass_index == grass_index and tower.cell_index == cell_index:
                 return True
@@ -212,7 +213,7 @@ class GameController:
 
             # Подсветка при перетаскивании
             if self.selected_tower_type and self.hovered_grass is not None and self.hovered_cell is not None:
-                can_place = not self.free_cell(self.hovered_grass, self.hovered_cell)  # Можно ли поставить
+                can_place = not self.is_cell_occupied(self.hovered_grass, self.hovered_cell)  # Можно ли поставить
 
                 range_radius = self.get_selected_tower_range()
 
@@ -301,17 +302,15 @@ class GameController:
                     self.show_tower_menu = False
 
                 # Клик по панели — выбор башни
-                if pos[1] >= 600:
-                    if 40 <= pos[0] <= 220:
-                        self.selected_tower_type = "v1"
-                    elif 300 <= pos[0] <= 480:
-                        self.selected_tower_type = "v2"
-                    elif 560 <= pos[0] <= 740:
-                        self.selected_tower_type = "v3"
+                if pos[1] >= PANEL_Y:
+                    for i, (x_min, x_max) in enumerate(TOWER_CLICK_ZONES):
+                        if x_min <= pos[0] <= x_max:
+                            self.selected_tower_type = f"v{i + 1}"
+                            break
 
                 # Клик по полю — установка башни
                 elif self.selected_tower_type and self.hovered_grass is not None and self.hovered_cell is not None:
-                    if not self.free_cell(self.hovered_grass, self.hovered_cell):  # Если свободна ячейка
+                    if not self.is_cell_occupied(self.hovered_grass, self.hovered_cell):  # Если свободна ячейка
                         self.place_tower(self.hovered_grass, self.hovered_cell)
 
         return True

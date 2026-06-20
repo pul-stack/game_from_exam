@@ -11,7 +11,7 @@ gc = GameController(screen)
 def test_free_cell_empty():
     """Пустая ячейка — свободна"""
     gc.towers = []
-    assert gc.free_cell(1, 2) == False
+    assert gc.is_cell_occupied(1, 2) == False
 
 
 def test_free_cell_occupied():
@@ -20,7 +20,7 @@ def test_free_cell_occupied():
     tower.grass_index = 1
     tower.cell_index = 2
     gc.towers = [tower]
-    assert gc.free_cell(1, 2) == True
+    assert gc.is_cell_occupied(1, 2) == True
 
 
 def test_free_cell_other_cell():
@@ -29,4 +29,4 @@ def test_free_cell_other_cell():
     tower.grass_index = 1
     tower.cell_index = 2
     gc.towers = [tower]
-    assert gc.free_cell(1, 0) == False
+    assert gc.is_cell_occupied(1, 0) == False

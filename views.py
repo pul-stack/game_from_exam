@@ -1,4 +1,7 @@
-from constants import Colors, SCREEN_WIDTH, SCREEN_HEIGHT, STRIP_POSITIONS, STRIP_WIDTH, GRASS_CENTERS, TOWER_CELLS_Y, TOWER_WIDTH, TOWER_HEIGHT
+from constants import (Colors, SCREEN_WIDTH, SCREEN_HEIGHT, STRIP_POSITIONS, STRIP_WIDTH, 
+                       GRASS_CENTERS, TOWER_CELLS_Y, TOWER_WIDTH, TOWER_HEIGHT,
+                       BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
+                       TOWER_ICON_WIDTH, TOWER_ICON_HEIGHT, TOWER_ICON_Y)
 import pygame
 
 
@@ -21,9 +24,9 @@ class GameView:
         self.menu_bg = pygame.image.load("assets/images/menu_background.jpg")
 
         # Иконки сделанные под размер панели
-        self.tower_v1_icon = pygame.transform.scale(self.tower_v1_img, (180, 150))
-        self.tower_v2_icon = pygame.transform.scale(self.tower_v2_img, (180, 150))
-        self.tower_v3_icon = pygame.transform.scale(self.tower_v3_img, (180, 150))
+        self.tower_v1_icon = pygame.transform.scale(self.tower_v1_img, (TOWER_ICON_WIDTH, TOWER_ICON_HEIGHT))
+        self.tower_v2_icon = pygame.transform.scale(self.tower_v2_img, (TOWER_ICON_WIDTH, TOWER_ICON_HEIGHT))
+        self.tower_v3_icon = pygame.transform.scale(self.tower_v3_img, (TOWER_ICON_WIDTH, TOWER_ICON_HEIGHT))
 
         self.menu_bg = pygame.transform.scale(self.menu_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
@@ -40,7 +43,7 @@ class GameView:
         for pos in STRIP_POSITIONS:
             left_edge = pos - STRIP_WIDTH // 2
             rect = pygame.Rect(left_edge, 0, STRIP_WIDTH, SCREEN_HEIGHT)
-            pygame.draw.rect(self.screen, Colors.SAND, rect)  # м.б что-то поменять ------------------------
+            pygame.draw.rect(self.screen, Colors.SAND, rect)
 
     def draw_menu(self):
         self.screen.blit(self.menu_bg, (0, 0))
@@ -58,7 +61,7 @@ class GameView:
 
         for text, action in [("Start new game", "start"), ("Settings", "settings"), ("Exit", "exit")]:
             mouse_pos = pygame.mouse.get_pos()
-            rect = pygame.Rect(300, y, 200, 50)
+            rect = pygame.Rect(BUTTON_X, y, BUTTON_WIDTH, BUTTON_HEIGHT)
             color = Colors.BUTTON_ACTIVE if rect.collidepoint(mouse_pos) else Colors.BUTTON
 
             pygame.draw.rect(self.screen, color, rect, border_radius=12)  # Кнопка
@@ -90,47 +93,47 @@ class GameView:
         for icon, x, name, price in tower_data:
 
             # Иконка с размерами для проверки
-            icon_rect = pygame.Rect(x, 615, 180, 150)
-            self.screen.blit(icon, (x, 615))
+            icon_rect = pygame.Rect(x, TOWER_ICON_Y, TOWER_ICON_WIDTH, TOWER_ICON_HEIGHT)
+            self.screen.blit(icon, (x, TOWER_ICON_Y))
 
             # Если мышь над иконкой
             if icon_rect.collidepoint(mouse_pos):
-                s = pygame.Surface((180, 150))
+                s = pygame.Surface((TOWER_ICON_WIDTH, TOWER_ICON_HEIGHT))
                 s.set_alpha(80)
                 s.fill(Colors.BUTTON_ACTIVE)
-                self.screen.blit(s, (x, 615))
+                self.screen.blit(s, (x, TOWER_ICON_Y))
 
             name_text = self.font_small.render(name, True, Colors.TEXT)
-            self.screen.blit(name_text, (x + 10, 615 + 155))
+            self.screen.blit(name_text, (x + 10, TOWER_ICON_Y + 155))
             # Иконка + цена
             coin = pygame.transform.scale(self.money_img, (48, 48))
-            self.screen.blit(coin, (x - 10, 615 + 160))
+            self.screen.blit(coin, (x - 10, TOWER_ICON_Y + 160))
             price_text = self.font_small.render(price, True, Colors.TEXT)
-            self.screen.blit(price_text, (x + 28, 615 + 175))
+            self.screen.blit(price_text, (x + 28, TOWER_ICON_Y + 175))
 
         # Отображение HP и золота (передаётся из контроллера)
         # Место — левый верхний угол панели
         hp_text = self.font_medium.render(f"HP: {self.current_health}", True, Colors.TEXT)
         money_text = self.font_medium.render(f"Gold: {self.current_money}", True, Colors.TEXT)
-        self.screen.blit(hp_text, (25, 608))
-        self.screen.blit(money_text, (25, 638))
+        self.screen.blit(hp_text, (25, TOWER_ICON_Y - 7))
+        self.screen.blit(money_text, (25, TOWER_ICON_Y + 23))
 
         # Иконка монетки
         money_icon = pygame.transform.scale(self.money_img, (60, 60))
-        self.screen.blit(money_icon, (-18, 620))
+        self.screen.blit(money_icon, (-18, TOWER_ICON_Y + 5))
 
     def draw_settings(self):
         self.screen.blit(self.menu_bg, (0, 0))
 
         title = self.font_large.render("Difficulty", True, Colors.TEXT)
-        title_rect = title.get_rect(center=(400, 150))
+        title_rect = title.get_rect(center=(SCREEN_WIDTH // 2, 150))
         self.screen.blit(title, title_rect)
 
         buttons = {}
         y = 340
         for text, action in [("Easy", "easy"), ("Medium", "medium"), ("Hard", "hard")]:
             mouse_pos = pygame.mouse.get_pos()
-            rect = pygame.Rect(300, y, 200, 50)
+            rect = pygame.Rect(BUTTON_X, y, BUTTON_WIDTH, BUTTON_HEIGHT)
             color = Colors.BUTTON_ACTIVE if rect.collidepoint(mouse_pos) else Colors.BUTTON
 
             pygame.draw.rect(self.screen, color, rect, border_radius=12)
