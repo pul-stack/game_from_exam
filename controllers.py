@@ -119,7 +119,18 @@ class GameController:
             self.update_hover()
 
     def find_second_target(self, tower, first_target):
-        """Находит второго врага в радиусе башни"""
+        """Находит второго врага для башни 5-ого уровня.
+
+        Ищет врага в радиусе атаки, исключая уже выбранную (самую приоритетную) цель.
+        Приоритет у врага, ближейшего к базе.
+
+        Args:
+            tower (Towers): Объект башни, для которой ищем цель.
+            first_target (Characters): Первая цель, которую нужно исключить из поиска.
+
+        Returns:
+            Characters | None: Вторая цель, если найдена. None, если других врагов в радиусе нет.
+        """
         tower_x = GRASS_CENTERS[tower.grass_index]
         tower_y = TOWER_CELLS_Y[tower.cell_index] + TOWER_HEIGHT // 2
 
@@ -161,14 +172,31 @@ class GameController:
                     break
 
     def is_cell_occupied(self, grass_index, cell_index):
-        """Возращает True, если ячейка уже занята башней"""
+        """Проверяет, занята ли ячейка поля установленной башни.
+
+        Args:
+            grass_index (int): Индекс вертикальной полосы травы (0-3).
+            cell_index (int): Индекс травы по вертикали (0-3).
+
+        Returns:
+            bool: True, если в ячейке уже стоит башня, иначе False.
+        """
         for tower in self.towers:
             if tower.grass_index == grass_index and tower.cell_index == cell_index:
                 return True
         return False
 
     def spawn_enemy(self):
-        """Создаёт случайного моба на любой из дорожек"""
+        """Создаёт случайного enemy на любой из дорожек.
+
+        Тип врага выбирается по весам: 75% гоблин, 15% огр, 10% Биг-Боб.
+        После созданяи врага может быть назначена случайная способность
+        (strong, fast, monetary). Хараактеристики масштабируются
+        с текущей сложность игры.
+
+        Спавн происходит в верхней части экрана (y = -40)
+        со случайным смещением по X относит. центра одной из дорожек.
+        """
         enemy_type = random.choices(
             [Goblins, Ogres, Big_Bob],
             weights=[75, 15, 10]
@@ -317,6 +345,16 @@ class GameController:
 
     # Установка башни
     def place_tower(self, grass_index, cell_index):
+        """Размещает башню на указанной ячейке поля.
+
+        Создаёт башню выбранного типа (v1, v2 или v3), списывает её стоимость
+        со счёта игрока и добавляет в список установленных  башен.
+        Если денег недостаточно или тип башни не выбран - ничего не делает.
+
+        Args:
+            grass_index (int): Индекс вертикальной полосы травы (0-3).
+            cell_index (int): Индекс ячейки по вертикали (0-3).
+        """
         if self.selected_tower_type == "v1":
             tower = Tower_v1()
         elif self.selected_tower_type == "v2":
@@ -336,7 +374,17 @@ class GameController:
         self.selected_tower_type = None
 
     def get_tower_at(self, pos):
-        """Возращает башню по координатам клика или None"""
+        """Возращает башню, находящейся под указанной позицией на экране.
+
+        Используется при клике мышью для открытия меню улучшения/продажи башни.
+
+        Args:
+            pos (([int,int])): Координаты (x, y) точки на экране.
+
+        Returns:
+            Towers | None: Объект башни, если под курсором есть башня.
+                None, если а этой точке нет башни.
+        """
         for tower in self.towers:
             rect = self.view.get_tower_rect(tower.grass_index, tower.cell_index)
             if rect.collidepoint(pos):
@@ -354,7 +402,18 @@ class GameController:
             self.show_tower_menu = False
 
     def upgrade_tower(self):
-        """Улучшение башни до след. уровня (макс. 5)"""
+        """Улучшение выбранной башни на один уровень.
+
+        Увеличивает уровень башни, её урон (+20% от базового),
+        ралиус атаки (+20 пикселей) и стоимость след. улучшения (+50%).
+        Стоимость улучшения добавляется к общей вложенной сумме
+
+        Максимальный уроуень башни - 5. На 5 уровне башня начинает
+        стрелять по двум целям одновременно.
+
+        Если башня не выбрана , уже макс. уровня или у игрока
+        недостаточно денег - ничего не делает
+        """
         tower = self.selected_tower
         if not tower or tower.level >= 5:
             return
@@ -370,7 +429,17 @@ class GameController:
         tower.upgrade_cost += tower.upgrade_cost // 2
 
     def find_target(self, tower):
-        """Находит врага, кто дальше всех в радиусе башни"""
+        """Находит первую (самую приоритетную) цель для атаки башни.
+
+        Алгоритм выбиарет врага, который находится в радиусе башни
+        и максимально приближён к базе (имеет наибольшую Y-координату).
+
+        Args:
+            tower (Towers): Объект башни, для которой ищем цель.
+        Returns:
+            Characters | None: Объект врага-башни, если он найден в радиусе.
+                None, если ни один враг не попалает в радиус атаки.
+        """
 
         tower_x = GRASS_CENTERS[tower.grass_index]
         tower_y = TOWER_CELLS_Y[tower.cell_index] + TOWER_HEIGHT // 2
