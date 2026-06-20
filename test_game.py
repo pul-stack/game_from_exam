@@ -1,11 +1,11 @@
 import pygame
 from controllers import GameController
 from models import Tower_v1, Tower_v2, Tower_v3, Goblins, Ogres, Big_Bob, Abilities, Missile, Explosion
-from constants import SCREEN_WIDTHб, SCREEN_HEIGHT
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
 pygame.init()
-screen = pygame.Surface(SCREEN_WIDTH, SCREEN_HEIGHT)
+screen = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 gamecon = GameController(screen)
 
 
@@ -48,7 +48,7 @@ def test_tower_v1_creation():
 
 
 def test_tower_v2_creation():
-    """Создание башни V3 с правильными параметрами"""
+    """Создание башни V2 с правильными параметрами"""
     tower = Tower_v2()
     assert tower.damage == 54
     assert tower.price == 240
@@ -74,27 +74,27 @@ def test_goblin_creation():
     enemy = Goblins()
     assert enemy.health == 70
     assert enemy.damage == 14
-    assert enemy.spped == 23
+    assert enemy.speed == 23
     assert enemy.give_money == 20
     assert enemy.enemy_type == "Goblin"
 
 
 def test_ogre_creation():
-    """Создание гоблина с правильными параметрами"""
+    """Создание огра с правильными параметрами"""
     enemy = Ogres()
     assert enemy.health == 140
     assert enemy.damage == 28
-    assert enemy.spped == 18
+    assert enemy.speed == 18
     assert enemy.give_money == 50
     assert enemy.enemy_type == "Ogre"
 
 
 def test_big_bob_creation():
-    """Создание гоблина с правильными параметрами"""
+    """Создание Биг Боба с правильными параметрами"""
     enemy = Big_Bob()
     assert enemy.health == 800
     assert enemy.damage == 80
-    assert enemy.spped == 14
+    assert enemy.speed == 14
     assert enemy.give_money == 200
     assert enemy.enemy_type == "Big Bob"
 
@@ -144,7 +144,7 @@ def test_ability_monetary():
 
 # --- Тесты для снарядов ---
 
-def test_missle_creation():
+def test_missile_creation():
     """Создание снаряда с правильными параметрами"""
     target = Goblins()
     target.x = 100
@@ -156,9 +156,26 @@ def test_missle_creation():
     assert missile.y == 0
     assert missile.target == target
     assert missile.damage == 30
-    assert missile.spped == 6
+    assert missile.speed == 6
     assert missile.alive == True
     assert missile.color == (255, 255, 100)
+
+
+def test_missile_movement():
+    """Снаряд движется к цели"""
+    target = Goblins()
+    target.x = 100
+    target.y = 0
+
+    missile = Missile(0, 0, target, damage=30, speed=10)
+    start_x = missile.x
+    start_y = missile.y
+
+    missile.update()
+
+    # Снаряд должен приблизиться к цели
+    assert missile.x > start_x or missile.y > start_y
+    assert missile.alive == True
 
 
 def test_missile_hit_target():
@@ -168,22 +185,80 @@ def test_missile_hit_target():
     target.y = 0
     target.health = 70
 
-    missile = Missile(0, 0, target, damage=30, spped=10)
+    missile = Missile(0, 0, target, damage=30, speed=10)
     start_health = target.health
-    
+
+    missile.update()
+
     # Снаряд должен достичь цели и нанести урон
     assert target.health < start_health
     assert missile.alive == False
 
 
 def test_missile_disappear_without_target():
-    """Снаряд исчезает, если target побеждена"""
+    """Снаряд исчезает, если target побеждён"""
     target = Goblins()
     target.x = 100
     target.y = 100
-    target.health = 0 # target побеждён
+    target.health = 0  # target побеждён
 
     missile = Missile(0, 0, target, damage=30, speed=6)
     missile.update()
 
     assert missile.alive == False
+
+
+# --- Тесты для взрывов ---
+
+def test_explosion_creation():
+    """Создание взрыва с правильными параметрами"""
+    explosion = Explosion(100, 200)
+
+    assert explosion.x == 100
+    assert explosion.y == 200
+    assert explosion.cadr == 0
+    assert explosion.timer == 0
+    assert explosion.alive == True
+
+
+def test_explosion_animation():
+    """Взрыв анимируется и исчезает"""
+    explosion = Explosion(100, 200)
+
+    # Обновляется взрыв несколько раз
+    for _ in range(20):
+        explosion.update()
+
+    # Взрыв должен завершиться
+    assert explosion.alive == False
+    assert explosion.cadr >= 4
+
+
+# --- Запуск тестов ---
+
+if __name__ == "__main__":
+    test_is_cell_occupied_empty()
+    test_is_cell_occupied_occupied()
+    test_is_cell_occupied_other_cell()
+
+    test_tower_v1_creation()
+    test_tower_v2_creation()
+    test_tower_v3_creation()
+
+    test_goblin_creation()
+    test_ogre_creation()
+    test_big_bob_creation()
+
+    test_ability_strong()
+    test_ability_fast()
+    test_ability_monetary()
+
+    test_missile_creation()
+    test_missile_movement()
+    test_missile_hit_target()
+    test_missile_disappear_without_target()
+
+    test_explosion_creation()
+    test_explosion_animation()
+
+    print("Все тесты пройдены!")
