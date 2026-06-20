@@ -7,7 +7,7 @@ class Abilities:
     abilities = {  # Сразу с шансом
         "strong":   {"health": 1.3, "damage": 1.3, "chance": 10, "color": (255, 100, 100)},
         "fast":     {"speed": 1.4, "chance": 10, "color": (100, 100, 255)},
-        "monetary": {"give_money": 1.4, "chance": 15, "color": (255, 255, 100)},
+        "monetary": {"give_money": 1.4, "chance": 15, "color": (255, 255, 100)}
     }
 
     @staticmethod
