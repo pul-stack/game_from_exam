@@ -2,6 +2,7 @@ import pygame
 from views import GameView
 from models import Goblins, Ogres, Big_Bob, Tower_v1, Tower_v2, Tower_v3, Abilities, Missile, Explosion
 import random
+from constants import GRASS_CENTERS, TOWER_CELLS_Y, TOWER_HEIGHT, STRIP_POSITIONS, TOWER_WIDTH
 
 
 class GameController:
@@ -84,8 +85,8 @@ class GameController:
                     target = self.find_target(tower)
                     if target:
                         # Создаём снаряд: из центра башни во врага
-                        tower_x = GameView.GRASS_CENTERS[tower.grass_index]
-                        tower_y = GameView.TOWER_CELLS_Y[tower.cell_index] + GameView.TOWER_HEIGHT // 2
+                        tower_x = GRASS_CENTERS[tower.grass_index]
+                        tower_y = TOWER_CELLS_Y[tower.cell_index] + TOWER_HEIGHT // 2
 
                         # Цвет снаряда по типу башни
                         from models import Tower_v1, Tower_v2, Tower_v3
@@ -118,8 +119,8 @@ class GameController:
 
     def find_second_target(self, tower, first_target):
         """Находит второго врага в радиусе башни"""
-        tower_x = GameView.GRASS_CENTERS[tower.grass_index]
-        tower_y = GameView.TOWER_CELLS_Y[tower.cell_index] + GameView.TOWER_HEIGHT // 2
+        tower_x = GRASS_CENTERS[tower.grass_index]
+        tower_y = TOWER_CELLS_Y[tower.cell_index] + TOWER_HEIGHT // 2
 
         best = None
         best_y = -1
@@ -146,15 +147,15 @@ class GameController:
             return
 
         self.hovered_grass = None  # Ищем линию травы (смотрим линии по вертикали)
-        for i, center in enumerate(GameView.GRASS_CENTERS):
-            if abs(mouse_pos[0] - center) < GameView.TOWER_WIDTH // 2 + 10:
+        for i, center in enumerate(GRASS_CENTERS):
+            if abs(mouse_pos[0] - center) < TOWER_WIDTH // 2 + 10:
                 self.hovered_grass = i
                 break
 
         self.hovered_cell = None  # Ищем ячейку по вертикали
         if self.hovered_grass is not None:  # Если мышь над травой
-            for i, cell_y in enumerate(GameView.TOWER_CELLS_Y):
-                if cell_y <= mouse_pos[1] < cell_y + GameView.TOWER_HEIGHT:  # Верхняя ... Нижняя
+            for i, cell_y in enumerate(TOWER_CELLS_Y):
+                if cell_y <= mouse_pos[1] < cell_y + TOWER_HEIGHT:  # Верхняя ... Нижняя
                     self.hovered_cell = i
                     break
 
@@ -180,7 +181,7 @@ class GameController:
         enemy.damage = int(enemy.damage * settings["enemy_dmg"])
         enemy.speed = int(enemy.speed * settings["enemy_speed"])
 
-        strip = random.choice(GameView.STRIP_POSITIONS)  
+        strip = random.choice(STRIP_POSITIONS)
         enemy.x = strip + random.randint(-20, 20)
         enemy.y = -40
 
@@ -372,8 +373,8 @@ class GameController:
     def find_target(self, tower):
         """Находит врага, кто дальше всех в радиусе башни"""
 
-        tower_x = GameView.GRASS_CENTERS[tower.grass_index]
-        tower_y = GameView.TOWER_CELLS_Y[tower.cell_index] + GameView.TOWER_HEIGHT // 2
+        tower_x = GRASS_CENTERS[tower.grass_index]
+        tower_y = TOWER_CELLS_Y[tower.cell_index] + TOWER_HEIGHT // 2
 
         target = None
         best_y = -1  # Чтлбы искать того, кто ближе всего к финишу

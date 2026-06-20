@@ -1,5 +1,5 @@
 import random
-from views import Colors
+from constants import Colors
 
 
 class Abilities:

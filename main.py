@@ -1,16 +1,16 @@
 import pygame
-from views import GameView
 from controllers import GameController
 import sys
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 
 
 def main():
     """Функция, управляющая работой всей игры"""
     pygame.init()
 
-    screen = pygame.display.set_mode((GameView.SCREEN_WIDTH, GameView.SCREEN_HEIGHT), 0, 32)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
     pygame.display.set_caption('Tower Defense in the Middle Ages')
-    clock = pygame.time.Clock() # таймер для контроля ФПС
+    clock = pygame.time.Clock()  # таймер для контроля ФПС
 
     game_controller = GameController(screen)
 

@@ -1,38 +1,9 @@
+from constants import Colors, SCREEN_WIDTH, SCREEN_HEIGHT, STRIP_POSITIONS, STRIP_WIDTH, GRASS_CENTERS, TOWER_CELLS_Y, TOWER_WIDTH, TOWER_HEIGHT
 import pygame
-
-
-class Colors:
-    TOWER_FRONT_V1 = (128, 128, 128)
-    TOWER_HEADER_V1 = (0, 0, 0)
-    GOBLINS = (0, 255, 0)
-    FIELD = (20, 160, 44)
-    SAND = (238, 214, 175)
-    TOWER_FRONT_V2 = (160, 128, 160)
-    TOWER_HEADER_V2 = (32, 0, 32)
-    TOWER_FRONT_V3 = (192, 128, 192)
-    TOWER_HEADER_V3 = (64, 0, 64)
-    OGRES = (0, 255, 60)
-    BIG_BOB = (255, 62, 255)
-    MONEY = (255, 255, 0)
-    TEXT = (0, 0, 0)
-    BUTTON = (160, 145, 150)
-    BUTTON_ACTIVE = (0, 0, 255)
 
 
 class GameView:
     """Класс, отвечающий за отрисовку игры"""
-    # Параметры для экрана игры
-    SCREEN_WIDTH, SCREEN_HEIGHT = 800, 810
-
-    # Параметры для поля
-    STRIP_POSITIONS = [200, 400, 600]  # Центры дорожек
-    STRIP_WIDTH = 80  # Ширина
-
-    GRASS_CENTERS = [80, 300, 500, 720]  # Центры травы по x
-
-    TOWER_CELLS_Y = [50, 200, 350, 500]  # Y-координаты верхних границ ячеек
-    TOWER_WIDTH = 76
-    TOWER_HEIGHT = 140
 
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
@@ -54,7 +25,7 @@ class GameView:
         self.tower_v2_icon = pygame.transform.scale(self.tower_v2_img, (180, 150))
         self.tower_v3_icon = pygame.transform.scale(self.tower_v3_img, (180, 150))
 
-        self.menu_bg = pygame.transform.scale(self.menu_bg, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        self.menu_bg = pygame.transform.scale(self.menu_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
         # Кадры взрыва
         self.explosions = []
@@ -66,9 +37,9 @@ class GameView:
     def draw_field(self):
         self.screen.fill(Colors.FIELD)
 
-        for pos in self.STRIP_POSITIONS:
-            left_edge = pos - self.STRIP_WIDTH // 2
-            rect = pygame.Rect(left_edge, 0, self.STRIP_WIDTH, self.SCREEN_HEIGHT)
+        for pos in STRIP_POSITIONS:
+            left_edge = pos - STRIP_WIDTH // 2
+            rect = pygame.Rect(left_edge, 0, STRIP_WIDTH, SCREEN_HEIGHT)
             pygame.draw.rect(self.screen, Colors.SAND, rect)  # м.б что-то поменять ------------------------
 
     def draw_menu(self):
@@ -175,9 +146,9 @@ class GameView:
 
     # Возвращает rect для башни по индексам
     def get_tower_rect(self, grass_index, cell_index):
-        x = self.GRASS_CENTERS[grass_index] - self.TOWER_WIDTH // 2  # Получаем левый край прямоугольника
-        y = self.TOWER_CELLS_Y[cell_index]
-        return pygame.Rect(x, y, self.TOWER_WIDTH, self.TOWER_HEIGHT)
+        x = GRASS_CENTERS[grass_index] - TOWER_WIDTH // 2  # Получаем левый край прямоугольника
+        y = TOWER_CELLS_Y[cell_index]
+        return pygame.Rect(x, y, TOWER_WIDTH, TOWER_HEIGHT)
 
     # Отрисовка установленной башни
     def draw_tower_on_field(self, tower):
@@ -214,10 +185,10 @@ class GameView:
 
         # Радиус атаки
         if range_radius:
-            center_x = self.GRASS_CENTERS[grass_index]
-            center_y = self.TOWER_CELLS_Y[cell_index] + self.TOWER_HEIGHT // 2
+            center_x = GRASS_CENTERS[grass_index]
+            center_y = TOWER_CELLS_Y[cell_index] + TOWER_HEIGHT // 2
 
-            s = pygame.Surface((self.SCREEN_WIDTH, self.SCREEN_HEIGHT), pygame.SRCALPHA)
+            s = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
             pygame.draw.circle(s, (255, 255, 100, 40), (center_x, center_y), range_radius)
             self.screen.blit(s, (0, 0))
 
@@ -285,17 +256,17 @@ class GameView:
     def draw_game_over(self):
         "Экран поражения"
         # Полупрозрачный тёмный фон на весь экран
-        s = pygame.Surface((self.SCREEN_WIDTH, self.SCREEN_HEIGHT), pygame.SRCALPHA)
+        s = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
         s.fill((0, 0, 0, 180))
         self.screen.blit(s, (0, 0))
 
         go_text = self.font_large.render("GAME OVER", True, (255, 80, 80))
-        go_rect = go_text.get_rect(center=(self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2 - 50))
+        go_rect = go_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 50))
         self.screen.blit(go_text, go_rect)
 
         # Подсказка
         help_text = self.font_small.render("Нажмите ESC, чтобы выйти из игры", True, Colors.TEXT)
-        help_rect = help_text.get_rect(center=(self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2 + 30))
+        help_rect = help_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 30))
         self.screen.blit(help_text, help_rect)
 
     def draw_tower_menu(self, tower, pos):
