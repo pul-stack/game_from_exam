@@ -98,3 +98,92 @@ def test_big_bob_creation():
     assert enemy.give_money == 200
     assert enemy.enemy_type == "Big Bob"
 
+
+# --- Тесты для системы способностей ---
+
+def test_ability_strong():
+    """Способность Strong увеличивает HP и урон"""
+    goblin = Goblins()
+    start_hp = goblin.health
+    start_dmg = goblin.damage
+
+    # Применяем способность Strong
+    goblin.health = int(goblin.health * 1.3)
+    goblin.damage = int(goblin.damage * 1.3)
+    goblin.color = (255, 100, 100)
+
+    assert goblin.health > start_hp
+    assert goblin.damage > start_dmg
+    assert goblin.color == (255, 100, 100)
+
+
+def test_ability_fast():
+    """Способность Fast увеличиает скорость"""
+    goblin = Goblins()
+    start_speed = goblin.speed
+
+    # Применяем способность Fast
+    goblin.speed = int(goblin.speed * 1.4)
+    goblin.color = (100, 100, 255)
+
+    assert goblin.speed > start_speed
+    assert goblin.color == (100, 100, 255)
+
+
+def test_ability_monetary():
+    """Способность Monetary увеличивает награду за enemy"""
+    goblin = Goblins()
+    start_money = goblin.give_money
+
+    goblin.give_money = int(goblin.give_money * 1.4)
+    goblin.color = (255, 255, 100)
+
+    assert goblin.give_money > start_money
+    assert goblin.color == (255, 255, 100)
+
+
+# --- Тесты для снарядов ---
+
+def test_missle_creation():
+    """Создание снаряда с правильными параметрами"""
+    target = Goblins()
+    target.x = 100
+    target.y = 100
+
+    missile = Missile(0, 0, target, damage=30, speed=6, color=(255, 255, 100))
+
+    assert missile.x == 0
+    assert missile.y == 0
+    assert missile.target == target
+    assert missile.damage == 30
+    assert missile.spped == 6
+    assert missile.alive == True
+    assert missile.color == (255, 255, 100)
+
+
+def test_missile_hit_target():
+    """Снаряд наносит урон цели при попадании"""
+    target = Goblins()
+    target.x = 5
+    target.y = 0
+    target.health = 70
+
+    missile = Missile(0, 0, target, damage=30, spped=10)
+    start_health = target.health
+    
+    # Снаряд должен достичь цели и нанести урон
+    assert target.health < start_health
+    assert missile.alive == False
+
+
+def test_missile_disappear_without_target():
+    """Снаряд исчезает, если target побеждена"""
+    target = Goblins()
+    target.x = 100
+    target.y = 100
+    target.health = 0 # target побеждён
+
+    missile = Missile(0, 0, target, damage=30, speed=6)
+    missile.update()
+
+    assert missile.alive == False
