@@ -3,6 +3,7 @@ from constants import (Colors, SCREEN_WIDTH, SCREEN_HEIGHT, STRIP_POSITIONS, STR
                        BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_X,
                        TOWER_ICON_WIDTH, TOWER_ICON_HEIGHT, TOWER_ICON_Y)
 import pygame
+from models import Tower_v1, Tower_v2, Tower_v3
 
 
 class GameView:
@@ -41,7 +42,7 @@ class GameView:
         self.screen.fill(Colors.FIELD)
 
         for pos in STRIP_POSITIONS:
-            left_edge = pos - STRIP_WIDTH // 2
+            left_edge = pos - STRIP_WIDTH // 2  # Левый край дорожки
             rect = pygame.Rect(left_edge, 0, STRIP_WIDTH, SCREEN_HEIGHT)
             pygame.draw.rect(self.screen, Colors.SAND, rect)
 
@@ -158,8 +159,6 @@ class GameView:
         rect = self.get_tower_rect(tower.grass_index, tower.cell_index)
 
         # Выбираем картинку по типу башни
-        from models import Tower_v1, Tower_v2, Tower_v3
-
         if isinstance(tower, Tower_v1):
             img = self.tower_v1_img
         elif isinstance(tower, Tower_v2):

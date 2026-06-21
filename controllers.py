@@ -11,13 +11,15 @@ class GameController:
         self.screen = screen
         self.view = GameView(screen)
         self.game_state = "menu"  # menu, playing, game_over
-        self.money = 100
-        self.health = 200
+
+        # Просто задаются переменные для игры
+        self.money = 0
+        self.health = 0
 
         # Мобы и их спавн, снаряды и взрывы
         self.enemies : list = []
         self.spawn_timer = 0
-        self.spawn_delay = 120 # Каждый 2 секунды
+        self.spawn_delay = 120 # Каждый 2 секунды (меняется при сложности)
         self.projectiles: list = []
         self.explosions : list = []
 
@@ -36,8 +38,8 @@ class GameController:
         self.difficulty = "medium"
         self.difficulty_settings = {
             "easy": {"money": 600, "health": 350, "enemy_dmg": 1.0, "enemy_hp": 1.0, "enemy_speed": 1.0, "spawn_delay": 120},
-            "medium": {"money": 400, "health": 250, "enemy_dmg": 1.13, "enemy_hp": 1.13, "enemy_speed": 1.1, "spawn_delay": 105},
-            "hard": {"money": 2000, "health": 150, "enemy_dmg": 1.26, "enemy_hp": 1.26, "enemy_speed": 1.2, "spawn_delay": 90}
+            "medium": {"money": 400, "health": 250, "enemy_dmg": 1.12, "enemy_hp": 1.12, "enemy_speed": 1.1, "spawn_delay": 105},
+            "hard": {"money": 200, "health": 150, "enemy_dmg": 1.24, "enemy_hp": 1.24, "enemy_speed": 1.2, "spawn_delay": 90}
         }
 
     def update(self):
@@ -49,7 +51,7 @@ class GameController:
                 self.spawn_enemy()
 
             # Движение мобов
-            for enemy in self.enemies[:]:
+            for enemy in self.enemies[:]:  # Копия списка, т.к нам нужно удалять в цикле. А сели ориганил, то будет ошибка
                 enemy.y += enemy.speed / 60
 
                 # Снижение hp базы
@@ -90,8 +92,7 @@ class GameController:
                         tower_y = TOWER_CELLS_Y[tower.cell_index] + TOWER_HEIGHT // 2
 
                         # Цвет снаряда по типу башни
-                        from models import Tower_v1, Tower_v2, Tower_v3
-                        if isinstance(tower, Tower_v1):
+                        if isinstance(tower, Tower_v1):  # Проверяется на наследование
                             missile_color = (255, 255, 100)  # Жёлтый
                         elif isinstance(tower, Tower_v2):
                             missile_color = (100, 100, 255)  # Синий
@@ -202,7 +203,7 @@ class GameController:
             weights=[75, 15, 10]
         )[0]
 
-        enemy = enemy_type()  # Создаётся рандомный юнит (из-за строки выше)
+        enemy = enemy_type()  # Создаётся рандомный юнит (скобки, чтобы сделать объект класса, а не сам класс)
         Abilities.get_ability(enemy)
 
         settings = self.difficulty_settings[self.difficulty]
@@ -275,7 +276,7 @@ class GameController:
                 self.view.draw_enemy(enemy)
             self.view.draw_game_over()
 
-    def work_event(self, event):  # handle_event
+    def work_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
 

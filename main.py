@@ -25,7 +25,7 @@ def main():
                     running = False
 
             result = game_controller.work_event(event)
-            if result is False:
+            if result is False:  # is - идентичностью объектов (ссылаются ли они на что-то общее (один и тот же объект в памяти))
                 running = False
 
         game_controller.update()  # Вызывается 60 раз в секунду

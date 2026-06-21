@@ -58,16 +58,12 @@ class Characters:
 
         self.enemy_type = None  # "Goblin", "Ogre", "Big Bob"
 
-        # self.lines = lines if lines is not None else random.randint(1, 3)
-
 
 class Towers:
     """Класс для переопределения башен"""
 
-    def __init__(self, damage=None, front_color=None, header_color=None, price=None, attack_range=120):
+    def __init__(self, damage=None, price=None, attack_range=120):
         self.damage = damage
-        self.front_color = front_color
-        self.header_color = header_color
         self.price = price
 
         self.attack_range = attack_range
@@ -129,8 +125,6 @@ class Tower_v1(Towers):
     def __init__(self):
         super().__init__(
             damage=30,
-            front_color=Colors.TOWER_FRONT_V1,
-            header_color=Colors.TOWER_HEADER_V1,
             price=100,
             attack_range=200
         )
@@ -156,8 +150,6 @@ class Tower_v2(Towers):
     def __init__(self):
         super().__init__(
             damage=54,
-            front_color=Colors.TOWER_FRONT_V2,
-            header_color=Colors.TOWER_HEADER_V2,
             price=240,
             attack_range=260
         )
@@ -169,8 +161,6 @@ class Tower_v3(Towers):
     def __init__(self):
         super().__init__(
             damage=80,
-            front_color=Colors.TOWER_FRONT_V3,
-            header_color=Colors.TOWER_HEADER_V3,
             price=600,
             attack_range=330
         )
