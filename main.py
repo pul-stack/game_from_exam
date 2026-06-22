@@ -10,7 +10,7 @@ def main():
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
     pygame.display.set_caption('Tower Defense in the Middle Ages')
-    clock = pygame.time.Clock()  # таймер для контроля ФПС
+    clock = pygame.time.Clock()  # Таймер для контроля ФПС
 
     game_controller = GameController(screen)
 
@@ -25,11 +25,10 @@ def main():
                     running = False
 
             result = game_controller.work_event(event)
-            if result is False:  # is - идентичностью объектов (ссылаются ли они на что-то общее (один и тот же объект в памяти))
+            if result is False:
                 running = False
 
         game_controller.update()  # Вызывается 60 раз в секунду
-        # game_controller
         game_controller.draw()
         # Обновление экрана (обязательная строка)
         pygame.display.flip()

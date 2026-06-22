@@ -85,6 +85,7 @@ class Missile:
         self.speed = speed
         self.alive = True  # Жив ли снаряд
         self.color = color
+
         # Начальные положения координат
         self.start_x = x
         self.start_y = y

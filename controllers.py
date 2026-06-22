@@ -45,13 +45,13 @@ class GameController:
     def update(self):
         """Обновление игры каждый кадр"""
         if self.game_state == "playing":
-            self.spawn_timer += 1  # За 2 секунлы будет столько enemy, какая сложность стоит
+            self.spawn_timer += 1
             if self.spawn_timer >= self.spawn_delay:
                 self.spawn_timer = 0
                 self.spawn_enemy()
 
             # Движение мобов
-            for enemy in self.enemies[:]:  # Копия списка, т.к нам нужно удалять в цикле. А сели ориганил, то будет ошибка
+            for enemy in self.enemies[:]:
                 enemy.y += enemy.speed / 60
 
                 # Снижение hp базы
@@ -203,7 +203,7 @@ class GameController:
             weights=[75, 15, 10]
         )[0]
 
-        enemy = enemy_type()  # Создаётся рандомный юнит (скобки, чтобы сделать объект класса, а не сам класс)
+        enemy = enemy_type()
         Abilities.get_ability(enemy)
 
         settings = self.difficulty_settings[self.difficulty]
@@ -446,7 +446,7 @@ class GameController:
         tower_y = TOWER_CELLS_Y[tower.cell_index] + TOWER_HEIGHT // 2
 
         target = None
-        best_y = -1  # Чтлбы искать того, кто ближе всего к финишу
+        best_y = -1  # Чтобы искать того, кто ближе всего к финишу
 
         for enemy in self.enemies:
             # Расстояние от центра башни до врага

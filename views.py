@@ -11,7 +11,7 @@ class GameView:
 
     def __init__(self, screen: pygame.Surface):
         self.screen = screen
-        self.font_large = pygame.font.Font(None, 52)  # Размер шрифтов
+        self.font_large = pygame.font.Font(None, 52)
         self.font_medium = pygame.font.Font(None, 40)
         self.font_small = pygame.font.Font(None, 28)
 
@@ -178,7 +178,7 @@ class GameView:
         price_text = self.font_small.render(f"{tower.price}", True, Colors.TEXT)   # Текст превращается в картинку с сглаженным текстом
         self.screen.blit(price_text, (rect.x + 5, rect.y + 5))  # Пишет текст в нужном месте
 
-    # Подсветка ячейки (жёлтая - можно, красная - нельзя) и радиуса атаки башни
+    # Подсветка ячейки (жёлтая - можно) и радиуса атаки башни
     def draw_tower_preview(self, grass_index, cell_index, can_place, range_radius=None):
         if grass_index is None or cell_index is None:  # Если мышь не над травой или не над ячейкой
             return
